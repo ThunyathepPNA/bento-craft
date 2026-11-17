@@ -5,40 +5,42 @@
 @layer base {
   body {
     font-family: 'Prompt', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    caret-color: #C83E2B;
+    text-underline-offset: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background-color: rgba(200, 62, 43, 0.16);
+    color: #181614;
+  }
+
+  :focus-visible {
+    outline: 2px solid #C83E2B;
+    outline-offset: 2px;
   }
 }
 
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
-}
-
 @keyframes popIn {
-  0% { transform: scale(0.86); opacity: 0; }
-  70% { transform: scale(1.03); opacity: 1; }
+  0% { transform: scale(0.96); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
 .animate-pop-in {
-  animation: popIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: popIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-float-slow {
-  animation: floatSlow 3.5s ease-in-out infinite;
-}
-
-/* Custom subtle scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #F6F3EC;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(168, 162, 158, 0.35);
+  background: #D8D1C4;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(120, 113, 108, 0.55);
+  background: #B58448;
 }

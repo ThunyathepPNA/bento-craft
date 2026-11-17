@@ -385,16 +385,10 @@ export function App() {
         <section className="lg:col-span-5 xl:col-span-4 bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] overflow-hidden flex flex-col">
           <div className="p-4 sm:p-5 border-b border-[#E4DEC8]">
             <div className="flex items-baseline justify-between gap-2 mb-1">
-              <div className="flex items-baseline gap-2">
-                <span
-                  className="text-xs font-semibold text-[#C83E2B] tracking-widest"
-                  style={{ fontFamily: "'Noto Serif JP', serif" }}
-                >
-                  お品書き
-                </span>
-                <h2 className="text-base font-bold text-[#181614]">รายการอาหาร (Oshinagaki)</h2>
-              </div>
-              <span className="text-xs text-[#8C847A] tabular-nums">{filteredFoods.length} รายการ</span>
+              <h2 className="text-base font-bold text-[#181614] tracking-[-0.02em]">
+                รายการอาหาร (お品書き)
+              </h2>
+              <span className="text-xs text-[#6E675F] tabular-nums">{filteredFoods.length} รายการ</span>
             </div>
             <p className="text-xs text-[#6E675F] mb-3.5">
               ลากภาพเมนูไปยังช่องเบนโตะ หรือคลิกเลือกเมนูแล้วกดที่ช่องเป้าหมาย
@@ -574,13 +568,10 @@ export function App() {
         <section className="lg:col-span-7 xl:col-span-8 space-y-5">
           {/* Vessel & Material Control Bar */}
           <div className="bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] p-4 sm:px-6 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-            {/* Step 01: Vessel Geometry */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] tabular-nums">
-                  01 / รูปทรงกล่อง (Vessel Geometry)
-                </span>
-              </div>
+              <h3 className="text-xs font-bold text-[#181614] mb-2">
+                รูปทรงกล่องเบนโตะ
+              </h3>
               <div className="flex flex-wrap gap-1.5">
                 {BENTO_LAYOUTS.map((layout) => {
                   const active = layout.id === layoutId;
@@ -595,7 +586,7 @@ export function App() {
                       }`}
                     >
                       <span>{layout.nameTh}</span>
-                      <span className={`ml-1.5 text-[10px] ${active ? 'text-[#B58448]' : 'text-[#8C847A]'}`}>
+                      <span className={`ml-1.5 text-[10px] ${active ? 'text-[#E4DEC8]' : 'text-[#6E675F]'}`}>
                         ({layout.slots.length} ช่อง)
                       </span>
                     </button>
@@ -604,13 +595,10 @@ export function App() {
               </div>
             </div>
 
-            {/* Step 02: Craft Finish */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] tabular-nums">
-                  02 / วัสดุงานคราฟต์ (Craft Finish)
-                </span>
-              </div>
+              <h3 className="text-xs font-bold text-[#181614] mb-2">
+                วัสดุภาชนะ
+              </h3>
               <div className="flex flex-wrap items-center gap-1.5">
                 {(Object.keys(BOX_THEMES) as BoxThemeId[]).map((tid) => {
                   const t = BOX_THEMES[tid];
@@ -971,17 +959,12 @@ export function App() {
               {/* Left 7 Cols: Nutritional Breakdown */}
               <div className="md:col-span-7 p-5">
                 <div className="flex items-baseline justify-between mb-3">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] block">
-                      Nutritional Ledger
-                    </span>
-                    <h3 className="text-sm font-bold text-[#181614] mt-0.5">
-                      สัดส่วนพลังงานและสารอาหารรวม
-                    </h3>
-                  </div>
+                  <h3 className="text-sm font-bold text-[#181614] tracking-[-0.02em]">
+                    สัดส่วนพลังงานและสารอาหารรวม
+                  </h3>
                   <div className="text-right tabular-nums">
                     <span className="text-2xl font-bold text-[#181614]">{telemetry.calories}</span>
-                    <span className="text-xs text-[#6E675F] ml-1">kcal / 850 kcal</span>
+                    <span className="text-xs text-[#5C564F] ml-1">kcal / 850 kcal</span>
                   </div>
                 </div>
 
@@ -1023,9 +1006,9 @@ export function App() {
               <div className="md:col-span-5 p-5 flex flex-col justify-between">
                 <div>
                   <div className="flex items-baseline justify-between mb-1">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A]">
-                      Washoku Goshiki (五色)
-                    </span>
+                    <h3 className="text-sm font-bold text-[#181614] tracking-[-0.02em]">
+                      สมดุลสีอาหาร 5 สี (五色)
+                    </h3>
                     <span className="text-xs font-bold text-[#181614] tabular-nums">
                       ความสมดุล {telemetry.harmonyScore}/100
                     </span>
@@ -1080,15 +1063,7 @@ export function App() {
         <div className="fixed inset-0 z-50 bg-black/55 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#FDFBF7] border border-[#E4DEC8] rounded-2xl max-w-md w-full p-6 shadow-2xl animate-pop-in">
             <div className="flex items-start justify-between pb-3 border-b border-[#E4DEC8]">
-              <div>
-                <span
-                  className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C83E2B]"
-                  style={{ fontFamily: "'Noto Serif JP', serif" }}
-                >
-                  御計算書 • BENTOCRAFT ATELIER
-                </span>
-                <h3 className="text-base font-bold text-[#181614] mt-0.5">{customLabel}</h3>
-              </div>
+              <h3 className="text-base font-bold text-[#181614]">{customLabel}</h3>
               <button
                 onClick={() => setIsOrderModalOpen(false)}
                 className="w-7 h-7 rounded-lg bg-[#EFECE4] hover:bg-[#E4DEC8] flex items-center justify-center text-xs font-bold"

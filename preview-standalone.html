@@ -14,6 +14,9 @@
     <style>
       body {
         font-family: 'Prompt', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        caret-color: #C83E2B;
+        text-underline-offset: 4px;
+        font-variant-numeric: tabular-nums;
       }
       @keyframes popIn {
         0% { transform: scale(0.95); opacity: 0; }
@@ -825,9 +828,9 @@
               <section className="lg:col-span-7 xl:col-span-8 space-y-5">
                 <div className="bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] p-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] block mb-1.5">
-                      01 / รูปทรงกล่อง (Vessel Geometry)
-                    </span>
+                    <h3 className="text-xs font-bold text-[#181614] mb-1.5">
+                      รูปทรงกล่องเบนโตะ
+                    </h3>
                     <div className="flex flex-wrap gap-1.5">
                       {BENTO_LAYOUTS.map((l) => (
                         <button
@@ -845,9 +848,9 @@
                     </div>
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] block mb-1.5">
-                      02 / วัสดุงานคราฟต์ (Craft Finish)
-                    </span>
+                    <h3 className="text-xs font-bold text-[#181614] mb-1.5">
+                      วัสดุภาชนะ
+                    </h3>
                     <div className="flex flex-wrap gap-1.5">
                       {Object.keys(BOX_THEMES).map((tid) => (
                         <button
@@ -1066,12 +1069,7 @@
                   <div className="grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-[#E4DEC8]">
                     <div className="md:col-span-7 p-5">
                       <div className="flex items-baseline justify-between mb-3">
-                        <div>
-                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] block">
-                            Nutritional Ledger
-                          </span>
-                          <h3 className="text-sm font-bold text-[#181614] mt-0.5">สัดส่วนพลังงานและสารอาหารรวม</h3>
-                        </div>
+                        <h3 className="text-sm font-bold text-[#181614]">สัดส่วนพลังงานและสารอาหารรวม</h3>
                         <div className="text-right tabular-nums">
                           <span className="text-2xl font-bold text-[#181614]">{telemetry.calories}</span>
                           <span className="text-xs text-[#6E675F] ml-1">kcal / 850 kcal</span>
@@ -1108,9 +1106,9 @@
                     <div className="md:col-span-5 p-5 flex flex-col justify-between">
                       <div>
                         <div className="flex items-baseline justify-between mb-1">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A]">
-                            Washoku Goshiki (五色)
-                          </span>
+                          <h3 className="text-sm font-bold text-[#181614]">
+                            สมดุลสีอาหาร 5 สี (五色)
+                          </h3>
                           <span className="text-xs font-bold text-[#181614] tabular-nums">
                             ความสมดุล {telemetry.harmonyScore}/100
                           </span>
