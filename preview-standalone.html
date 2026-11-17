@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BentoCraft Atelier — 特製弁当工房 (Impeccable Craft UI)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body {
+        font-family: 'Prompt', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      @keyframes popIn {
+        0% { transform: scale(0.95); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      .animate-pop-in {
+        animation: popIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      ::-webkit-scrollbar { width: 5px; height: 5px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #D8D1C4; border-radius: 9999px; }
+    </style>
+  </head>
+  <body class="bg-[#F6F3EC] text-[#181614] antialiased selection:bg-[#C83E2B]/15 selection:text-[#C83E2B]">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useMemo } = React;
+
+      function FoodPhoto({ foodId, nameTh, size = 'md', className = '' }) {
+        const [err, setErr] = useState(false);
+        const sizeClass =
+          size === 'sm'
+            ? 'w-12 h-12 rounded-lg'
+            : size === 'lg'
+            ? 'w-32 h-32 sm:w-36 sm:h-36 rounded-2xl'
+            : size === 'fill'
+            ? 'w-full h-full rounded-none'
+            : 'w-16 h-16 rounded-xl';
+
+        if (err) {
+          return (
+            <div className={`${sizeClass} bg-[#EFECE4] border border-[#E4DEC8] flex items-center justify-center text-xs font-serif text-[#8C847A] ${className}`}>
+              料理
+            </div>
+          );
+        }
+
+        return (
+          <div className={`relative overflow-hidden bg-[#181614]/5 shadow-sm ring-1 ring-black/10 ${sizeClass} ${className}`}>
+            <img
+              src={`./public/images/foods/${foodId}.jpg`}
+              alt={nameTh || foodId}
+              onError={() => setErr(true)}
+              className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/20 bg-gradient-to-tr from-black/10 via-transparent to-white/10" />
+          </div>
+        );
+      }
+
+      const IMPECCABLE_CATEGORY_META = {
+        base: { labelTh: 'ข้าว & เส้น', kanji: '主食' },
+        main: { labelTh: 'โปรตีนหลัก', kanji: '主菜' },
+        side: { labelTh: 'เครื่องเคียง', kanji: '副菜' },
+        sweet: { labelTh: 'ของหวาน & ผลไม้', kanji: '甘味' },
+        topping: { labelTh: 'ท็อปปิ้ง & ซอส', kanji: '薬味' },
+      };
+
+      const FOOD_ITEMS = [
+        {
+          id: 'rice-koshihikari',
+          nameTh: 'ข้าวญี่ปุ่นโคชิฮิคาริโรยงาดำ',
+          nameJp: 'こしひかり白米',
+          category: 'base',
+          calories: 230,
+          protein: 4,
+          carbs: 51,
+          fat: 1,
+          price: 25,
+          washokuColors: ['white', 'black'],
+          description: 'ข้าวญี่ปุ่นเมล็ดสั้นเหนียวนุ่ม หุงสดใหม่ โรยงาดำคั่วหอมและบ๊วยดองอุเมะโบชิ',
+        },
+        {
+          id: 'rice-brown-quinoa',
+          nameTh: 'ข้าวกล้องออร์แกนิกผสมควินัว 3 สี',
+          nameJp: '玄米とキヌア',
+          category: 'base',
+          calories: 195,
+          protein: 6,
+          carbs: 39,
+          fat: 2,
+          price: 35,
+          washokuColors: ['yellow', 'black'],
+          description: 'คาร์บเชิงซ้อนดัชนีน้ำตาลต่ำ อยู่ท้องนาน เหมาะสำหรับสายเฮลตี้',
+        },
+        {
+          id: 'rice-garlic-butter',
+          nameTh: 'ข้าวผัดกระเทียมเนยฮอกไกโด',
+          nameJp: 'ガーリックライス',
+          category: 'base',
+          calories: 285,
+          protein: 5,
+          carbs: 48,
+          fat: 8,
+          price: 40,
+          washokuColors: ['yellow', 'green'],
+          description: 'ข้าวญี่ปุ่นผัดเนยสดฮอกไกโด กระเทียมเจียวกรอบ และต้นหอมญี่ปุ่นซอย',
+        },
+        {
+          id: 'noodle-yakisoba',
+          nameTh: 'เส้นยากิโซบะผัดซอสโอโคโนมิ',
+          nameJp: '特製焼きそば',
+          category: 'base',
+          calories: 260,
+          protein: 7,
+          carbs: 44,
+          fat: 6,
+          price: 45,
+          washokuColors: ['yellow', 'green', 'red'],
+          description: 'เส้นโซบะเหนียวนุ่มผัดกะหล่ำปลี แครอท และสาหร่ายอาโอโนริหอมกรุ่น',
+        },
+        {
+          id: 'main-salmon-teriyaki',
+          nameTh: 'แซลมอนนอร์เวย์ย่างเทอริยากิ',
+          nameJp: '鮭の照り焼き',
+          category: 'main',
+          calories: 290,
+          protein: 28,
+          carbs: 8,
+          fat: 16,
+          price: 115,
+          washokuColors: ['red', 'black'],
+          description: 'เนื้อปลาแซลมอนสดย่างหนังกรอบ เคลือบซอสเทอริยากิเคี่ยวสูตรโฮมเมด โรยงาขาว',
+        },
+        {
+          id: 'main-pork-tonkatsu',
+          nameTh: 'หมูคุโรบูตะทงคัตสึทอดกรอบ',
+          nameJp: '黒豚とんかつ',
+          category: 'main',
+          calories: 360,
+          protein: 25,
+          carbs: 18,
+          fat: 21,
+          price: 95,
+          washokuColors: ['yellow', 'black'],
+          description: 'สันนอกหมูดำคุโรบูตะชุบเกล็ดขนมปังสดปังโกะทอดสีทอง เสิร์ฟพร้อมซอสทงคัตสึ',
+        },
+        {
+          id: 'main-chicken-karaage',
+          nameTh: 'ไก่คาราอาเกะซอสส้มยูซุ',
+          nameJp: '柚子鶏の唐揚げ',
+          category: 'main',
+          calories: 275,
+          protein: 24,
+          carbs: 12,
+          fat: 14,
+          price: 85,
+          washokuColors: ['yellow', 'green'],
+          description: 'สะโพกไก่หมักขิงและโชยุ ทอดกรอบไร้มัน ราดซอสยูซุเปรี้ยวอมหวาน',
+        },
+        {
+          id: 'main-wagyu-yakiniku',
+          nameTh: 'เนื้อวากิวสไลซ์ย่างซอสยากินิกุ',
+          nameJp: '和牛焼肉カルビ',
+          category: 'main',
+          calories: 340,
+          protein: 26,
+          carbs: 7,
+          fat: 23,
+          price: 145,
+          washokuColors: ['red', 'black', 'white'],
+          description: 'เนื้อวากิวลายหินอ่อนย่างไฟแรงคลุกซอสยากินิกุ หอมกลิ่นถ่านและงาคั่ว',
+        },
+        {
+          id: 'main-ebi-tempura',
+          nameTh: 'กุ้งเทมปุระจักรพรรดิ 3 ตัว',
+          nameJp: '大海老天ぷら',
+          category: 'main',
+          calories: 250,
+          protein: 19,
+          carbs: 20,
+          fat: 10,
+          price: 110,
+          washokuColors: ['yellow', 'red'],
+          description: 'กุ้งทะเลตัวโตชุบแป้งเทมปุระเย็นจัด ทอดฟูกรอบไม่อมน้ำมัน พร้อมน้ำจิ้มเทนสึยุ',
+        },
+        {
+          id: 'side-tamagoyaki',
+          nameTh: 'ไข่ม้วนญี่ปุ่นดาชิทามาโกะ',
+          nameJp: '出汁巻き卵',
+          category: 'side',
+          calories: 120,
+          protein: 9,
+          carbs: 4,
+          fat: 7,
+          price: 35,
+          washokuColors: ['yellow'],
+          description: 'ไข่ม้วนสูตรเกียวโต ผสมน้ำซุปปลาโอคัตสึโอะดาชิ หอมหวานนุ่มชุ่มฉ่ำ',
+        },
+        {
+          id: 'side-wakame-salad',
+          nameTh: 'สลัดสาหร่ายวากาเมะและถั่วแระ',
+          nameJp: '海藻と枝豆サラダ',
+          category: 'side',
+          calories: 85,
+          protein: 6,
+          carbs: 8,
+          fat: 3,
+          price: 40,
+          washokuColors: ['green', 'black'],
+          description: 'สาหร่ายวากาเมะกรุบกรอบ ถั่วแระญี่ปุ่นเอดามะเมะ และน้ำสลัดงาญี่ปุ่นคั่ว',
+        },
+        {
+          id: 'side-gyoza',
+          nameTh: 'เกี๊ยวซ่าหมูย่างกระทะเหล็ก 4 ชิ้น',
+          nameJp: '焼き餃子',
+          category: 'side',
+          calories: 180,
+          protein: 8,
+          carbs: 21,
+          fat: 7,
+          price: 45,
+          washokuColors: ['white', 'yellow'],
+          description: 'เกี๊ยวซ่าไส้หมูสับและกะหล่ำปลี ทอดด้วยเทคนิคน้ำแป้งบางกรอบ',
+        },
+        {
+          id: 'side-kimchi-pickles',
+          nameTh: 'กิมจิโฮมเมด & ผักดองสึเคโมโนะ',
+          nameJp: '自家製キムチ漬物',
+          category: 'side',
+          calories: 45,
+          protein: 2,
+          carbs: 7,
+          fat: 0.5,
+          price: 30,
+          washokuColors: ['red', 'yellow'],
+          description: 'ช่วยตัดเลี่ยนและเพิ่มจุลินทรีย์ดีต่อลำไส้ รสเปรี้ยวเผ็ดกำลังดี',
+        },
+        {
+          id: 'sweet-matcha-mochi',
+          nameTh: 'ไดฟุกุมัทฉะอูจิไส้ถั่วแดงกวน',
+          nameJp: '宇治抹茶大福',
+          category: 'sweet',
+          calories: 145,
+          protein: 3,
+          carbs: 31,
+          fat: 1,
+          price: 45,
+          washokuColors: ['green', 'red'],
+          description: 'แป้งโมจิเหนียวนุ่มคลุกผงมัทฉะแท้ สอดไส้ถั่วแดงอะซึกิหวานน้อย',
+        },
+        {
+          id: 'sweet-amaou-strawberry',
+          nameTh: 'สตรอว์เบอร์รีอะมาโอ & กีวีสด',
+          nameJp: 'あまおう苺とキウイ',
+          category: 'sweet',
+          calories: 65,
+          protein: 1,
+          carbs: 15,
+          fat: 0.4,
+          price: 50,
+          washokuColors: ['red', 'green'],
+          description: 'ผลไม้สดคัดพิเศษ รสหวานอมเปรี้ยว ช่วยเติมความสดชื่นหลังมื้ออาหาร',
+        },
+        {
+          id: 'sweet-yuzu-jelly',
+          nameTh: 'พุดดิ้งเต้าหู้นมสดซอสส้มยูซุ',
+          nameJp: '柚子豆乳プリン',
+          category: 'sweet',
+          calories: 110,
+          protein: 5,
+          carbs: 16,
+          fat: 3,
+          price: 45,
+          washokuColors: ['white', 'yellow'],
+          description: 'พุดดิ้งเต้าหู้นมฮอกไกโดเนื้อเนียน ราดแยมส้มยูซุหอมสดชื่น',
+        },
+        {
+          id: 'top-tobiko',
+          nameTh: 'ไข่กุ้งโทบิโกะสีส้มกรุบกรอบ',
+          nameJp: 'とびっこ',
+          category: 'topping',
+          calories: 35,
+          protein: 4,
+          carbs: 1,
+          fat: 1.5,
+          price: 25,
+          washokuColors: ['red'],
+          description: 'ลากวางทับช่องข้าวหรือโปรตีน เพื่อเพิ่มสัมผัสกรุบกรอบและสีสัน',
+        },
+        {
+          id: 'top-furikake',
+          nameTh: 'ผงโรยข้าวสาหร่ายปลาแห้งฟุริคาเกะ',
+          nameJp: '海苔ふりかけ',
+          category: 'topping',
+          calories: 25,
+          protein: 2,
+          carbs: 2,
+          fat: 1,
+          price: 15,
+          washokuColors: ['black', 'green'],
+          description: 'เพิ่มกลิ่นหอมอูมามิของสาหร่ายโนริ งาคั่ว และปลาโออบแห้ง',
+        },
+        {
+          id: 'top-onsen-egg',
+          nameTh: 'ไข่ออนเซ็นเยิ้มๆ',
+          nameJp: '温泉卵',
+          category: 'topping',
+          calories: 75,
+          protein: 6,
+          carbs: 1,
+          fat: 5,
+          price: 20,
+          washokuColors: ['yellow', 'white'],
+          description: 'ไข่ลวกอุณหภูมิออนเซ็น 65°C ไข่แดงครีมมี่คลุกข้าวอร่อยมาก',
+        },
+        {
+          id: 'top-spicy-mayo',
+          nameTh: 'ซอสสไปซี่เมนไทโกะมาโย',
+          nameJp: '明太マヨソース',
+          category: 'topping',
+          calories: 60,
+          protein: 1,
+          carbs: 2,
+          fat: 5,
+          price: 15,
+          washokuColors: ['red'],
+          description: 'ซอสมาโยไข่ปลาเมนไทโกะรสเผ็ดนัว เข้ากับของทอดและปลาแซลมอน',
+        },
+      ];
+
+      const BENTO_LAYOUTS = [
+        {
+          id: 'classic-4',
+          nameTh: 'กล่องฮิโนกิ 4 ช่องมาตรฐาน',
+          nameJp: '定番四つ仕切り弁当',
+          description: 'สมดุลลงตัวด้วยช่องข้าวขนาดใหญ่ จานหลักโปรตีน เครื่องเคียง และของหวาน',
+          baseBoxFee: 15,
+          gridContainerClass: 'grid-cols-12',
+          slots: [
+            {
+              id: 'slot-1',
+              labelTh: 'ช่องที่ 1 • ข้าว & คาร์บหลัก',
+              recommendedCategory: 'base',
+              gridSpanClass: 'col-span-12 sm:col-span-6 sm:row-span-2',
+              minHeightClass: 'min-h-[220px] sm:min-h-[360px]',
+            },
+            {
+              id: 'slot-2',
+              labelTh: 'ช่องที่ 2 • จานหลักโปรตีน',
+              recommendedCategory: 'main',
+              gridSpanClass: 'col-span-12 sm:col-span-6',
+              minHeightClass: 'min-h-[175px]',
+            },
+            {
+              id: 'slot-3',
+              labelTh: 'ช่องที่ 3 • เครื่องเคียง',
+              recommendedCategory: 'side',
+              gridSpanClass: 'col-span-6 sm:col-span-3',
+              minHeightClass: 'min-h-[170px]',
+            },
+            {
+              id: 'slot-4',
+              labelTh: 'ช่องที่ 4 • ผลไม้ / ของหวาน',
+              recommendedCategory: 'sweet',
+              gridSpanClass: 'col-span-6 sm:col-span-3',
+              minHeightClass: 'min-h-[170px]',
+            },
+          ],
+        },
+        {
+          id: 'makunouchi-5',
+          nameTh: 'กล่องมาคุโนะอุจิ 5 ช่องพรีเมียม',
+          nameJp: '幕の内五つ仕切り御膳',
+          description: 'จัดเต็มสำหรับคนชอบความหลากหลาย มีช่องโปรตีนหลักถึง 2 ช่อง',
+          baseBoxFee: 25,
+          gridContainerClass: 'grid-cols-12',
+          slots: [
+            {
+              id: 'slot-1',
+              labelTh: 'ช่องที่ 1 • ข้าวญี่ปุ่น / เส้น',
+              recommendedCategory: 'base',
+              gridSpanClass: 'col-span-12 sm:col-span-5',
+              minHeightClass: 'min-h-[175px]',
+            },
+            {
+              id: 'slot-2',
+              labelTh: 'ช่องที่ 2 • โปรตีนหลัก A',
+              recommendedCategory: 'main',
+              gridSpanClass: 'col-span-12 sm:col-span-4',
+              minHeightClass: 'min-h-[175px]',
+            },
+            {
+              id: 'slot-3',
+              labelTh: 'ช่องที่ 3 • เครื่องเคียง',
+              recommendedCategory: 'side',
+              gridSpanClass: 'col-span-6 sm:col-span-3',
+              minHeightClass: 'min-h-[175px]',
+            },
+            {
+              id: 'slot-4',
+              labelTh: 'ช่องที่ 4 • โปรตีนหลัก B',
+              recommendedCategory: 'main',
+              gridSpanClass: 'col-span-12 sm:col-span-7',
+              minHeightClass: 'min-h-[175px]',
+            },
+            {
+              id: 'slot-5',
+              labelTh: 'ช่องที่ 5 • ของหวาน / ผลไม้',
+              recommendedCategory: 'sweet',
+              gridSpanClass: 'col-span-6 sm:col-span-5',
+              minHeightClass: 'min-h-[175px]',
+            },
+          ],
+        },
+        {
+          id: 'wellness-3',
+          nameTh: 'กล่องเฮลตี้ 3 ช่องคุมแคลอรี',
+          nameJp: 'ヘルシー三つ仕切り弁当',
+          description: 'กะทัดรัด เน้นสัดส่วน 2:1:1 ตามหลักโภชนาการคลีน',
+          baseBoxFee: 10,
+          gridContainerClass: 'grid-cols-12',
+          slots: [
+            {
+              id: 'slot-1',
+              labelTh: 'ช่องที่ 1 • โปรตีนไร้มัน',
+              recommendedCategory: 'main',
+              gridSpanClass: 'col-span-12 sm:col-span-6',
+              minHeightClass: 'min-h-[200px]',
+            },
+            {
+              id: 'slot-2',
+              labelTh: 'ช่องที่ 2 • คาร์บเชิงซ้อน',
+              recommendedCategory: 'base',
+              gridSpanClass: 'col-span-12 sm:col-span-6',
+              minHeightClass: 'min-h-[200px]',
+            },
+            {
+              id: 'slot-3',
+              labelTh: 'ช่องที่ 3 • สลัดผัก & ผลไม้สด',
+              recommendedCategory: 'side',
+              gridSpanClass: 'col-span-12',
+              minHeightClass: 'min-h-[160px]',
+            },
+          ],
+        },
+      ];
+
+      const WASHOKU_COLOR_META = {
+        red: { nameTh: 'สีแดง/ส้ม', dotClass: 'bg-[#C83E2B]' },
+        green: { nameTh: 'สีเขียว', dotClass: 'bg-emerald-600' },
+        yellow: { nameTh: 'สีเหลือง/ทอง', dotClass: 'bg-[#B58448]' },
+        white: { nameTh: 'สีขาว', dotClass: 'bg-[#FAF8F5] border border-[#8C847A]' },
+        black: { nameTh: 'สีดำ/เข้ม', dotClass: 'bg-[#181614]' },
+      };
+
+      const BOX_THEMES = {
+        hinoki: {
+          nameTh: 'ไม้สนฮิโนกิ',
+          outerClass:
+            'bg-gradient-to-br from-[#DCC09A] via-[#CEA97B] to-[#BC915D] p-3.5 shadow-[0_24px_48px_-12px_rgba(68,44,18,0.28)] border border-[#A67B48] ring-1 ring-inset ring-white/30',
+          dividerClass: 'gap-2.5 bg-[#8E6537] p-2.5 rounded-[18px] shadow-inner',
+          slotBgClass: 'bg-[#FAF6EF] border-[#C9A679] text-[#181614]',
+          dotColor: 'bg-[#C99E67]',
+        },
+        urushi: {
+          nameTh: 'ลงรักคุโระขอบทอง',
+          outerClass:
+            'bg-[#161413] p-3.5 shadow-[0_28px_56px_-12px_rgba(0,0,0,0.45)] border border-[#B58448]/70 ring-1 ring-inset ring-[#B58448]/30',
+          dividerClass: 'gap-2.5 bg-[#380E0C] p-2.5 rounded-[18px] ring-1 ring-[#B58448]/25',
+          slotBgClass: 'bg-[#1D1918] border-[#4E1916] text-[#F6F3EC]',
+          dotColor: 'bg-[#181614]',
+        },
+        sakura: {
+          nameTh: 'เซรามิกชิการากิ',
+          outerClass:
+            'bg-[#E6E0D5] p-3.5 shadow-[0_24px_48px_-12px_rgba(40,36,30,0.16)] border border-[#CFC7B8] ring-1 ring-inset ring-white/60',
+          dividerClass: 'gap-2.5 bg-[#CBC3B4] p-2.5 rounded-[18px] shadow-inner',
+          slotBgClass: 'bg-[#FDFBF7] border-[#D8D1C4] text-[#181614]',
+          dotColor: 'bg-[#D8D1C4]',
+        },
+      };
+
+      function App() {
+        const [layoutId, setLayoutId] = useState('classic-4');
+        const [boxTheme, setBoxTheme] = useState('hinoki');
+        const [visualMode, setVisualMode] = useState('full-photo');
+        const [activeCategory, setActiveCategory] = useState('all');
+        const [searchQuery, setSearchQuery] = useState('');
+        const [bentoSlots, setBentoSlots] = useState(() => ({
+          'slot-1': {
+            item: FOOD_ITEMS.find((f) => f.id === 'rice-koshihikari'),
+            toppings: [FOOD_ITEMS.find((f) => f.id === 'top-furikake')],
+          },
+          'slot-2': {
+            item: FOOD_ITEMS.find((f) => f.id === 'main-salmon-teriyaki'),
+            toppings: [FOOD_ITEMS.find((f) => f.id === 'top-tobiko')],
+          },
+          'slot-3': {
+            item: FOOD_ITEMS.find((f) => f.id === 'side-tamagoyaki'),
+            toppings: [],
+          },
+          'slot-4': {
+            item: FOOD_ITEMS.find((f) => f.id === 'sweet-matcha-mochi'),
+            toppings: [],
+          },
+        }));
+        const [draggedFoodId, setDraggedFoodId] = useState(null);
+        const [draggedFromSlotId, setDraggedFromSlotId] = useState(null);
+        const [dragOverSlotId, setDragOverSlotId] = useState(null);
+        const [selectedFoodForTap, setSelectedFoodForTap] = useState(null);
+        const [isLidClosed, setIsLidClosed] = useState(false);
+        const [customLabel, setCustomLabel] = useState('特製御弁当 • Folk’s Crafted Bento');
+        const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+        const [toastMessage, setToastMessage] = useState(null);
+
+        const currentLayout = useMemo(
+          () => BENTO_LAYOUTS.find((l) => l.id === layoutId) || BENTO_LAYOUTS[0],
+          [layoutId]
+        );
+
+        const showToast = (msg) => {
+          setToastMessage(msg);
+          window.setTimeout(() => {
+            setToastMessage((prev) => (prev === msg ? null : prev));
+          }, 2400);
+        };
+
+        const filteredFoods = useMemo(() => {
+          return FOOD_ITEMS.filter((item) => {
+            const matchesCat = activeCategory === 'all' || item.category === activeCategory;
+            const q = searchQuery.trim().toLowerCase();
+            const matchesQuery =
+              !q ||
+              item.nameTh.toLowerCase().includes(q) ||
+              item.nameJp.toLowerCase().includes(q) ||
+              item.description.toLowerCase().includes(q);
+            return matchesCat && matchesQuery;
+          });
+        }, [activeCategory, searchQuery]);
+
+        const placeFoodInSlot = (slotId, food, sourceSlotId = null) => {
+          if (isLidClosed) setIsLidClosed(false);
+          if (food.category === 'topping') {
+            const existing = bentoSlots[slotId];
+            if (!existing) {
+              showToast('กรุณาเลือกอาหารหลักลงในช่องก่อนวางท็อปปิ้ง');
+              return;
+            }
+            if (existing.toppings.some((t) => t.id === food.id)) {
+              showToast(`มี ${food.nameTh} ในช่องนี้อยู่แล้ว`);
+              return;
+            }
+            setBentoSlots((prev) => ({
+              ...prev,
+              [slotId]: {
+                ...prev[slotId],
+                toppings: [...prev[slotId].toppings, food],
+              },
+            }));
+            showToast(`เพิ่มท็อปปิ้ง "${food.nameTh}" เรียบร้อย`);
+            setSelectedFoodForTap(null);
+            return;
+          }
+
+          setBentoSlots((prev) => {
+            const next = { ...prev };
+            if (sourceSlotId && sourceSlotId !== slotId) {
+              const targetExisting = next[slotId];
+              const sourceExisting = next[sourceSlotId];
+              if (sourceExisting) {
+                next[slotId] = sourceExisting;
+                if (targetExisting) next[sourceSlotId] = targetExisting;
+                else delete next[sourceSlotId];
+              }
+              return next;
+            }
+            next[slotId] = { item: food, toppings: [] };
+            return next;
+          });
+          showToast(`จัดวาง "${food.nameTh}" ลงในช่องเรียบร้อย`);
+          setSelectedFoodForTap(null);
+        };
+
+        const autoPlaceFood = (food) => {
+          if (food.category === 'topping') {
+            const firstFilled = currentLayout.slots.find((s) => Boolean(bentoSlots[s.id]));
+            if (!firstFilled) {
+              showToast('กรุณาใส่อาหารหลักในกล่องก่อนเพิ่มท็อปปิ้ง');
+              return;
+            }
+            placeFoodInSlot(firstFilled.id, food);
+            return;
+          }
+          const emptyMatching = currentLayout.slots.find(
+            (s) => s.recommendedCategory === food.category && !bentoSlots[s.id]
+          );
+          if (emptyMatching) return placeFoodInSlot(emptyMatching.id, food);
+          const anyEmpty = currentLayout.slots.find((s) => !bentoSlots[s.id]);
+          if (anyEmpty) return placeFoodInSlot(anyEmpty.id, food);
+          const matchingSlot =
+            currentLayout.slots.find((s) => s.recommendedCategory === food.category) ||
+            currentLayout.slots[0];
+          placeFoodInSlot(matchingSlot.id, food);
+        };
+
+        const randomizeBento = () => {
+          setIsLidClosed(false);
+          const nextSlots = {};
+          const toppingsPool = FOOD_ITEMS.filter((f) => f.category === 'topping');
+          currentLayout.slots.forEach((slot) => {
+            const pool = FOOD_ITEMS.filter((f) => f.category === slot.recommendedCategory);
+            const randomItem = pool[Math.floor(Math.random() * pool.length)];
+            if (randomItem) {
+              const maybeTopping =
+                (slot.recommendedCategory === 'base' || slot.recommendedCategory === 'main') &&
+                Math.random() > 0.35
+                  ? [toppingsPool[Math.floor(Math.random() * toppingsPool.length)]]
+                  : [];
+              nextSlots[slot.id] = { item: randomItem, toppings: maybeTopping };
+            }
+          });
+          setBentoSlots(nextSlots);
+          showToast('สุ่มจัดสำรับโอมากาเสะ (Omakase) เรียบร้อย');
+        };
+
+        const telemetry = useMemo(() => {
+          let calories = 0, protein = 0, carbs = 0, fat = 0, foodPrice = 0, filledCount = 0;
+          const colorSet = new Set();
+          currentLayout.slots.forEach((slot) => {
+            const entry = bentoSlots[slot.id];
+            if (!entry) return;
+            filledCount += 1;
+            [entry.item, ...entry.toppings].forEach((f) => {
+              calories += f.calories;
+              protein += f.protein;
+              carbs += f.carbs;
+              fat += f.fat;
+              foodPrice += f.price;
+              f.washokuColors.forEach((c) => colorSet.add(c));
+            });
+          });
+          const totalPrice = filledCount > 0 ? foodPrice + currentLayout.baseBoxFee : 0;
+          const fillRatio = filledCount / currentLayout.slots.length;
+          const colorRatio = colorSet.size / 5;
+          const harmonyScore = Math.round((fillRatio * 0.55 + colorRatio * 0.45) * 100);
+          return {
+            calories,
+            protein,
+            carbs,
+            fat: Math.round(fat * 10) / 10,
+            totalPrice,
+            filledCount,
+            totalSlots: currentLayout.slots.length,
+            colorsPresent: Array.from(colorSet),
+            harmonyScore,
+          };
+        }, [bentoSlots, currentLayout]);
+
+        const activeTheme = BOX_THEMES[boxTheme];
+
+        return (
+          <div className="min-h-screen bg-[#F6F3EC] text-[#181614] pb-16">
+            {toastMessage && (
+              <div className="fixed bottom-6 right-6 z-50 bg-[#181614] text-[#FAF8F5] px-4 py-3 rounded-xl shadow-2xl border border-white/10 flex items-center gap-3 text-xs font-medium tracking-wide animate-pop-in">
+                <span className="w-2 h-2 rounded-full bg-[#C83E2B]" />
+                <span>{toastMessage}</span>
+              </div>
+            )}
+
+            <header className="sticky top-0 z-30 bg-[#F6F3EC]/90 backdrop-blur-md border-b border-[#E4DEC8]">
+              <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div
+                    className="w-10 h-10 rounded-lg bg-[#C83E2B] text-[#FAF8F5] flex flex-col items-center justify-center leading-none border border-[#A32C1C] shadow-sm select-none"
+                    style={{ fontFamily: "'Noto Serif JP', serif" }}
+                  >
+                    <span className="text-[11px] font-bold tracking-tighter">特製</span>
+                    <span className="text-[11px] font-bold tracking-tighter">辨當</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2.5">
+                      <h1 className="text-lg font-bold tracking-tight text-[#181614]">
+                        BentoCraft Atelier
+                      </h1>
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded bg-[#EFECE4] text-[#5C564F] border border-[#E4DEC8]">
+                        Impeccable Craft UI
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#6E675F]">
+                      สตูดิโอออกแบบสำรับเบนโตะญี่ปุ่น • ลากวางภาพถ่ายอาหารจริงและคำนวณสมดุลโภชนาการ 5 สี (五色)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={randomizeBento}
+                    className="text-xs font-semibold px-3.5 py-2 rounded-lg bg-[#181614] hover:bg-[#C83E2B] text-[#FAF8F5] transition-colors flex items-center gap-1.5"
+                  >
+                    <span>สุ่มจัดสำรับ (Omakase)</span>
+                  </button>
+                </div>
+              </div>
+            </header>
+
+            <main className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* LEFT OSHINAGAKI MENU */}
+              <section className="lg:col-span-5 xl:col-span-4 bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] overflow-hidden flex flex-col">
+                <div className="p-4 sm:p-5 border-b border-[#E4DEC8]">
+                  <div className="flex items-baseline justify-between gap-2 mb-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs font-semibold text-[#C83E2B] tracking-widest" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                        お品書き
+                      </span>
+                      <h2 className="text-base font-bold text-[#181614]">รายการอาหาร (Oshinagaki)</h2>
+                    </div>
+                    <span className="text-xs text-[#8C847A] tabular-nums">{filteredFoods.length} รายการ</span>
+                  </div>
+                  <p className="text-xs text-[#6E675F] mb-3.5">
+                    ลากภาพเมนูไปยังช่องเบนโตะ หรือคลิกเลือกเมนูแล้วกดที่ช่องเป้าหมาย
+                  </p>
+
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="ค้นหาเมนู เช่น แซลมอน, วากิว, ไข่ม้วน, โมจิ..."
+                    className="w-full px-3.5 py-2 mb-3 text-xs bg-[#F6F3EC] border border-[#E4DEC8] rounded-lg focus:outline-none focus:border-[#181614]"
+                  />
+
+                  <div className="flex items-center gap-1 overflow-x-auto pb-1">
+                    <button
+                      onClick={() => setActiveCategory('all')}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
+                        activeCategory === 'all'
+                          ? 'bg-[#181614] text-[#FAF8F5]'
+                          : 'bg-[#F6F3EC] text-[#5C564F]'
+                      }`}
+                    >
+                      ทั้งหมด
+                    </button>
+                    {Object.keys(IMPECCABLE_CATEGORY_META).map((cat) => {
+                      const meta = IMPECCABLE_CATEGORY_META[cat];
+                      const active = activeCategory === cat;
+                      return (
+                        <button
+                          key={cat}
+                          onClick={() => setActiveCategory(cat)}
+                          className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap flex items-center gap-1.5 ${
+                            active ? 'bg-[#181614] text-[#FAF8F5]' : 'bg-[#F6F3EC] text-[#5C564F]'
+                          }`}
+                        >
+                          <span className={`text-[10px] ${active ? 'text-[#C83E2B]' : 'text-[#8C847A]'}`} style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                            {meta.kanji}
+                          </span>
+                          <span>{meta.labelTh}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="divide-y divide-[#E4DEC8] max-h-[620px] overflow-y-auto">
+                  {filteredFoods.map((food) => {
+                    const catMeta = IMPECCABLE_CATEGORY_META[food.category];
+                    const isSelected = selectedFoodForTap?.id === food.id;
+                    return (
+                      <div
+                        key={food.id}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', food.id);
+                          setDraggedFoodId(food.id);
+                          setDraggedFromSlotId(null);
+                        }}
+                        onDragEnd={() => {
+                          setDraggedFoodId(null);
+                          setDragOverSlotId(null);
+                        }}
+                        onClick={() =>
+                          setSelectedFoodForTap((prev) => (prev?.id === food.id ? null : food))
+                        }
+                        className={`group p-3.5 sm:px-5 flex items-center gap-3.5 transition-colors cursor-grab active:cursor-grabbing ${
+                          isSelected ? 'bg-[#EFECE4]' : 'hover:bg-[#F6F3EC]/80'
+                        }`}
+                      >
+                        <FoodPhoto foodId={food.id} nameTh={food.nameTh} size="md" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#8C847A]">
+                              {catMeta.kanji} • {catMeta.labelTh}
+                            </span>
+                            <span className="text-xs font-bold text-[#181614] tabular-nums">฿{food.price}</span>
+                          </div>
+                          <h3 className="text-sm font-bold text-[#181614] truncate mt-0.5">{food.nameTh}</h3>
+                          <p className="text-[11px] text-[#6E675F] line-clamp-1 mt-0.5">{food.description}</p>
+                          <div className="flex items-center justify-between mt-2 text-[11px] tabular-nums text-[#6E675F]">
+                            <span>{food.calories} kcal • P {food.protein}g • C {food.carbs}g</span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                autoPlaceFood(food);
+                              }}
+                              className="px-2.5 py-1 rounded-md bg-[#F6F3EC] group-hover:bg-[#181614] text-[#181614] group-hover:text-[#FAF8F5] border border-[#E4DEC8] text-[11px] font-semibold transition-colors"
+                            >
+                              + จัดวาง
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+
+              {/* RIGHT BENTO WORKSPACE */}
+              <section className="lg:col-span-7 xl:col-span-8 space-y-5">
+                <div className="bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] p-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] block mb-1.5">
+                      01 / รูปทรงกล่อง (Vessel Geometry)
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {BENTO_LAYOUTS.map((l) => (
+                        <button
+                          key={l.id}
+                          onClick={() => setLayoutId(l.id)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                            l.id === layoutId
+                              ? 'bg-[#181614] text-[#FAF8F5] border-[#181614]'
+                              : 'bg-[#F6F3EC] text-[#5C564F] border-[#E4DEC8]'
+                          }`}
+                        >
+                          {l.nameTh} ({l.slots.length} ช่อง)
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] block mb-1.5">
+                      02 / วัสดุงานคราฟต์ (Craft Finish)
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {Object.keys(BOX_THEMES).map((tid) => (
+                        <button
+                          key={tid}
+                          onClick={() => setBoxTheme(tid)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-2 ${
+                            boxTheme === tid
+                              ? 'bg-[#181614] text-[#FAF8F5] border-[#181614]'
+                              : 'bg-[#F6F3EC] text-[#5C564F] border-[#E4DEC8]'
+                          }`}
+                        >
+                          <span className={`w-2.5 h-2.5 rounded-full border border-white/40 ${BOX_THEMES[tid].dotColor}`} />
+                          <span>{BOX_THEMES[tid].nameTh}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* HERO BENTO BOX */}
+                <div className="bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] p-4 sm:p-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-[#E4DEC8]">
+                    <div>
+                      <div className="flex items-baseline gap-2.5">
+                        <h2 className="text-base sm:text-lg font-bold text-[#181614]">{currentLayout.nameTh}</h2>
+                        <span className="text-xs text-[#8C847A]" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                          {currentLayout.nameJp}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#6E675F] mt-0.5">{currentLayout.description}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setVisualMode((p) => (p === 'full-photo' ? 'plated' : 'full-photo'))}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F6F3EC] text-[#181614] border border-[#E4DEC8]"
+                      >
+                        {visualMode === 'full-photo' ? 'มุมมอง: ภาพถ่ายเต็มช่อง' : 'มุมมอง: จัดจาน'}
+                      </button>
+                      <button
+                        onClick={() => setIsLidClosed((p) => !p)}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F6F3EC] text-[#181614] border border-[#E4DEC8]"
+                      >
+                        {isLidClosed ? 'เปิดฝากล่องเบนโตะ' : 'คาดสายโอบิ & ปิดฝา'}
+                      </button>
+                      <button
+                        onClick={() => setBentoSlots({})}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#8C847A] hover:text-[#C83E2B]"
+                      >
+                        ล้างกล่อง
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className={`rounded-[28px] transition-all ${activeTheme.outerClass}`}>
+                    {isLidClosed ? (
+                      <div className="min-h-[380px] rounded-[18px] bg-[#181614] flex flex-col items-center justify-center p-6 text-center text-[#FAF8F5] relative overflow-hidden animate-pop-in">
+                        <div className="absolute inset-y-0 w-32 bg-[#FAF8F5] border-x-2 border-[#C83E2B] shadow-2xl" />
+                        <div className="relative z-10 bg-[#FDFBF7] text-[#181614] p-6 rounded-xl shadow-2xl border border-[#E4DEC8] max-w-sm w-full">
+                          <div className="text-[11px] font-bold tracking-[0.2em] text-[#C83E2B] mb-1.5" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                            謹製 • OMOTENASHI BENTO
+                          </div>
+                          <input
+                            type="text"
+                            value={customLabel}
+                            onChange={(e) => setCustomLabel(e.target.value)}
+                            className="w-full text-center font-bold text-sm bg-[#F6F3EC] border border-[#E4DEC8] rounded-lg px-3 py-1.5"
+                          />
+                          <div className="mt-3 pt-3 border-t border-[#E4DEC8] text-xs text-[#5C564F] tabular-nums">
+                            {telemetry.filledCount}/{telemetry.totalSlots} ช่อง • {telemetry.calories} kcal • ฿{telemetry.totalPrice}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className={`grid ${currentLayout.gridContainerClass} ${activeTheme.dividerClass}`}>
+                        {currentLayout.slots.map((slot, idx) => {
+                          const slotted = bentoSlots[slot.id];
+                          const recMeta = IMPECCABLE_CATEGORY_META[slot.recommendedCategory];
+                          const isOver = dragOverSlotId === slot.id;
+                          const slotNumber = String(idx + 1).padStart(2, '0');
+                          return (
+                            <div
+                              key={slot.id}
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                setDragOverSlotId(slot.id);
+                              }}
+                              onDragLeave={() => setDragOverSlotId(null)}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                setDragOverSlotId(null);
+                                const id = e.dataTransfer.getData('text/plain') || draggedFoodId;
+                                const food = FOOD_ITEMS.find((f) => f.id === id);
+                                if (food) placeFoodInSlot(slot.id, food, draggedFromSlotId);
+                                setDraggedFoodId(null);
+                                setDraggedFromSlotId(null);
+                              }}
+                              onClick={() => {
+                                if (selectedFoodForTap) placeFoodInSlot(slot.id, selectedFoodForTap);
+                              }}
+                              className={`${slot.gridSpanClass} ${slot.minHeightClass} group relative rounded-[12px] border overflow-hidden transition-all shadow-[inset_0_3px_12px_rgba(0,0,0,0.22)] ${
+                                activeTheme.slotBgClass
+                              } ${isOver ? 'ring-2 ring-[#C83E2B] scale-[1.005]' : ''}`}
+                            >
+                              {slotted && visualMode === 'full-photo' ? (
+                                <div
+                                  draggable
+                                  onDragStart={(e) => {
+                                    e.dataTransfer.setData('text/plain', slotted.item.id);
+                                    setDraggedFoodId(slotted.item.id);
+                                    setDraggedFromSlotId(slot.id);
+                                  }}
+                                  className="relative w-full h-full min-h-[inherit] flex flex-col justify-between p-3 cursor-grab animate-pop-in"
+                                >
+                                  <div className="absolute inset-0 z-0">
+                                    <FoodPhoto foodId={slotted.item.id} nameTh={slotted.item.nameTh} size="fill" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/40 shadow-[inset_0_4px_20px_rgba(0,0,0,0.5)]" />
+                                  </div>
+
+                                  <div className="relative z-10 flex items-center justify-between gap-2">
+                                    <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded bg-black/55 text-white/90 backdrop-blur-md tabular-nums">
+                                      {slotNumber} • {recMeta.kanji}
+                                    </span>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setBentoSlots((prev) => {
+                                          const n = { ...prev };
+                                          delete n[slot.id];
+                                          return n;
+                                        });
+                                      }}
+                                      className="px-2 py-0.5 rounded bg-black/60 hover:bg-[#C83E2B] text-white text-[10px] font-medium backdrop-blur-md"
+                                    >
+                                      นำออก
+                                    </button>
+                                  </div>
+
+                                  {slotted.toppings.length > 0 && (
+                                    <div className="relative z-10 my-auto flex flex-wrap justify-end gap-1.5">
+                                      {slotted.toppings.map((t) => (
+                                        <div
+                                          key={t.id}
+                                          className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-black/70 text-white backdrop-blur-md border border-white/20 text-[10px] font-medium"
+                                        >
+                                          <FoodPhoto foodId={t.id} nameTh={t.nameTh} size="sm" className="!w-5 !h-5 !rounded-full" />
+                                          <span>+{t.nameTh}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+
+                                  <div className="relative z-10 flex items-end justify-between gap-2 pt-2">
+                                    <div>
+                                      <div className="text-[10px] text-[#E4DEC8]" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                                        {slotted.item.nameJp}
+                                      </div>
+                                      <h3 className="text-sm sm:text-base font-bold text-white leading-snug">
+                                        {slotted.item.nameTh}
+                                      </h3>
+                                    </div>
+                                    <div className="text-right bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/15 text-white tabular-nums">
+                                      <div className="text-[10px] text-[#E4DEC8]">{slotted.item.calories} kcal</div>
+                                      <div className="text-xs font-bold">฿{slotted.item.price}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : slotted ? (
+                                <div className="p-3.5 h-full flex flex-col justify-between">
+                                  <div className="flex justify-between text-[11px] tabular-nums">
+                                    <span>{slotNumber} • {recMeta.labelTh}</span>
+                                    <button
+                                      onClick={() =>
+                                        setBentoSlots((prev) => {
+                                          const n = { ...prev };
+                                          delete n[slot.id];
+                                          return n;
+                                        })
+                                      }
+                                      className="text-[#C83E2B]"
+                                    >
+                                      นำออก
+                                    </button>
+                                  </div>
+                                  <div className="my-auto py-2 flex flex-col items-center text-center">
+                                    <FoodPhoto foodId={slotted.item.id} nameTh={slotted.item.nameTh} size="lg" />
+                                    <h3 className="mt-2 text-sm font-bold">{slotted.item.nameTh}</h3>
+                                  </div>
+                                  <div className="flex justify-between text-[11px] tabular-nums">
+                                    <span>{slotted.item.calories} kcal</span>
+                                    <span className="font-bold">฿{slotted.item.price}</span>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="p-3.5 h-full min-h-[inherit] flex flex-col justify-between">
+                                  <div className="flex justify-between text-[11px] opacity-60 tabular-nums">
+                                    <span className="font-bold">{slotNumber}</span>
+                                    <span style={{ fontFamily: "'Noto Serif JP', serif" }}>{recMeta.kanji} • {recMeta.labelTh}</span>
+                                  </div>
+                                  <div className="my-auto py-4 text-center border border-dashed border-current/25 rounded-lg p-3 opacity-65">
+                                    <div className="text-lg font-serif mb-1" style={{ fontFamily: "'Noto Serif JP', serif" }}>{recMeta.kanji}</div>
+                                    <div className="text-xs font-medium">ลากภาพเมนูมาวางในช่องนี้</div>
+                                  </div>
+                                  <div className="text-[10px] opacity-45">ว่าง</div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* ARCHITECTURAL TELEMETRY LEDGER */}
+                <div className="bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] overflow-hidden">
+                  <div className="grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-[#E4DEC8]">
+                    <div className="md:col-span-7 p-5">
+                      <div className="flex items-baseline justify-between mb-3">
+                        <div>
+                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A] block">
+                            Nutritional Ledger
+                          </span>
+                          <h3 className="text-sm font-bold text-[#181614] mt-0.5">สัดส่วนพลังงานและสารอาหารรวม</h3>
+                        </div>
+                        <div className="text-right tabular-nums">
+                          <span className="text-2xl font-bold text-[#181614]">{telemetry.calories}</span>
+                          <span className="text-xs text-[#6E675F] ml-1">kcal / 850 kcal</span>
+                        </div>
+                      </div>
+                      <div className="w-full h-1.5 bg-[#EFECE4] rounded-full overflow-hidden mb-4">
+                        <div className="h-full bg-[#181614] transition-all duration-300" style={{ width: `${Math.min(100, (telemetry.calories / 850) * 100)}%` }} />
+                      </div>
+                      <div className="grid grid-cols-3 divide-x divide-[#E4DEC8] border border-[#E4DEC8] rounded-xl bg-[#F6F3EC]/60 tabular-nums">
+                        <div className="p-3">
+                          <div className="flex items-center gap-1.5 text-[11px] text-[#5C564F]">
+                            <span className="w-2 h-2 rounded-full bg-[#C83E2B]" />
+                            <span>โปรตีน (Protein)</span>
+                          </div>
+                          <div className="text-lg font-bold text-[#181614] mt-1">{telemetry.protein}g</div>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex items-center gap-1.5 text-[11px] text-[#5C564F]">
+                            <span className="w-2 h-2 rounded-full bg-[#B58448]" />
+                            <span>คาร์บ (Carbs)</span>
+                          </div>
+                          <div className="text-lg font-bold text-[#181614] mt-1">{telemetry.carbs}g</div>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex items-center gap-1.5 text-[11px] text-[#5C564F]">
+                            <span className="w-2 h-2 rounded-full bg-[#5C564F]" />
+                            <span>ไขมัน (Fat)</span>
+                          </div>
+                          <div className="text-lg font-bold text-[#181614] mt-1">{telemetry.fat}g</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="md:col-span-5 p-5 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-baseline justify-between mb-1">
+                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8C847A]">
+                            Washoku Goshiki (五色)
+                          </span>
+                          <span className="text-xs font-bold text-[#181614] tabular-nums">
+                            ความสมดุล {telemetry.harmonyScore}/100
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#6E675F] mb-3">
+                          หลักสมดุลสีอาหาร 5 สีตามศาสตร์การปรุงอาหารญี่ปุ่นดั้งเดิม
+                        </p>
+                        <div className="grid grid-cols-5 gap-1.5 mb-4">
+                          {Object.keys(WASHOKU_COLOR_META).map((colorKey) => {
+                            const meta = WASHOKU_COLOR_META[colorKey];
+                            const achieved = telemetry.colorsPresent.includes(colorKey);
+                            return (
+                              <div
+                                key={colorKey}
+                                className={`py-2 px-1 rounded-lg border text-center ${
+                                  achieved
+                                    ? 'bg-[#181614] text-[#FAF8F5] border-[#181614]'
+                                    : 'bg-[#F6F3EC] text-[#8C847A] border-[#E4DEC8] opacity-60'
+                                }`}
+                              >
+                                <div className={`w-3 h-3 rounded-full mx-auto mb-1 ${meta.dotClass}`} />
+                                <div className="text-[10px] font-medium truncate">{meta.nameTh}</div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-[#E4DEC8] flex items-center justify-between gap-3">
+                        <div className="tabular-nums">
+                          <div className="text-[11px] text-[#6E675F]">ยอดรวมสุทธิ</div>
+                          <div className="text-2xl font-bold text-[#181614]">฿{telemetry.totalPrice}</div>
+                        </div>
+                        <button
+                          onClick={() => setIsOrderModalOpen(true)}
+                          className="flex-1 py-3 px-4 rounded-xl bg-[#C83E2B] hover:bg-[#A83221] text-white font-semibold text-xs tracking-wide transition-colors"
+                        >
+                          สรุปรายการสั่งทำเบนโตะ
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </main>
+
+            {isOrderModalOpen && (
+              <div className="fixed inset-0 z-50 bg-black/55 backdrop-blur-sm flex items-center justify-center p-4">
+                <div className="bg-[#FDFBF7] border border-[#E4DEC8] rounded-2xl max-w-md w-full p-6 shadow-2xl">
+                  <div className="flex justify-between items-start pb-3 border-b border-[#E4DEC8]">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C83E2B]" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                        御計算書 • BENTOCRAFT ATELIER
+                      </span>
+                      <h3 className="text-base font-bold text-[#181614] mt-0.5">{customLabel}</h3>
+                    </div>
+                    <button onClick={() => setIsOrderModalOpen(false)} className="w-7 h-7 rounded-lg bg-[#EFECE4] text-xs font-bold">✕</button>
+                  </div>
+                  <div className="my-4 space-y-2.5 text-xs">
+                    {currentLayout.slots.map((slot) => {
+                      const entry = bentoSlots[slot.id];
+                      if (!entry) return null;
+                      return (
+                        <div key={slot.id} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <FoodPhoto foodId={entry.item.id} nameTh={entry.item.nameTh} size="sm" className="!w-8 !h-8 !rounded-md" />
+                            <span className="font-medium">{entry.item.nameTh}</span>
+                          </div>
+                          <span className="font-bold tabular-nums">฿{entry.item.price}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex justify-between text-sm font-bold pt-3 border-t border-[#E4DEC8] mb-4 tabular-nums">
+                    <span>ยอดชำระสุทธิ (รวมค่ากล่อง)</span>
+                    <span>฿{telemetry.totalPrice}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsOrderModalOpen(false);
+                      setIsLidClosed(true);
+                      showToast('บันทึกคำสั่งทำและคาดสายโอบิเรียบร้อย');
+                    }}
+                    className="w-full py-3 rounded-xl bg-[#181614] hover:bg-[#C83E2B] text-[#FAF8F5] font-semibold text-xs"
+                  >
+                    ยืนยันสั่งทำ & คาดสายโอบิปิดฝากล่อง
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
+</html>
