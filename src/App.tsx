@@ -41,28 +41,28 @@ const BOX_THEMES: Record<
     nameTh: 'ไม้สนฮิโนกิ',
     kanji: '檜木箱',
     outerClass:
-      'bg-gradient-to-br from-[#DCC09A] via-[#CEA97B] to-[#BC915D] p-3.5 shadow-[0_24px_48px_-12px_rgba(68,44,18,0.28)] border border-[#A67B48] ring-1 ring-inset ring-white/30',
-    dividerClass: 'gap-2.5 bg-[#8E6537] p-2.5 rounded-[18px] shadow-inner',
-    slotBgClass: 'bg-[#FAF6EF] border-[#C9A679] text-[#181614]',
+      'bg-gradient-to-br from-[#DCC09A] via-[#CEA97B] to-[#BC915D] p-3.5 shadow-[0_24px_48px_-12px_rgba(68,44,18,0.28)]',
+    dividerClass: 'gap-2.5 bg-[#8E6537] p-2.5 rounded-[18px]',
+    slotBgClass: 'bg-white border-[#C9A679] text-zinc-900',
     dotColor: 'bg-[#C99E67]',
   },
   urushi: {
     nameTh: 'ลงรักคุโระขอบทอง',
     kanji: '黒漆塗',
     outerClass:
-      'bg-[#161413] p-3.5 shadow-[0_28px_56px_-12px_rgba(0,0,0,0.45)] border border-[#B58448]/70 ring-1 ring-inset ring-[#B58448]/30',
-    dividerClass: 'gap-2.5 bg-[#380E0C] p-2.5 rounded-[18px] ring-1 ring-[#B58448]/25',
-    slotBgClass: 'bg-[#1D1918] border-[#4E1916] text-[#F6F3EC]',
-    dotColor: 'bg-[#181614]',
+      'bg-zinc-950 p-3.5 shadow-[0_28px_56px_-12px_rgba(0,0,0,0.45)]',
+    dividerClass: 'gap-2.5 bg-[#380E0C] p-2.5 rounded-[18px]',
+    slotBgClass: 'bg-zinc-900 border-[#4E1916] text-white',
+    dotColor: 'bg-zinc-900',
   },
   sakura: {
     nameTh: 'เซรามิกชิการากิ',
     kanji: '信楽焼',
     outerClass:
-      'bg-[#E6E0D5] p-3.5 shadow-[0_24px_48px_-12px_rgba(40,36,30,0.16)] border border-[#CFC7B8] ring-1 ring-inset ring-white/60',
-    dividerClass: 'gap-2.5 bg-[#CBC3B4] p-2.5 rounded-[18px] shadow-inner',
-    slotBgClass: 'bg-[#FDFBF7] border-[#D8D1C4] text-[#181614]',
-    dotColor: 'bg-[#D8D1C4]',
+      'bg-zinc-200 p-3.5 shadow-[0_24px_48px_-12px_rgba(24,24,27,0.16)]',
+    dividerClass: 'gap-2.5 bg-zinc-300 p-2.5 rounded-[18px]',
+    slotBgClass: 'bg-white border-zinc-300 text-zinc-900',
+    dotColor: 'bg-zinc-400',
   },
 };
 
@@ -315,60 +315,54 @@ export function App() {
   const activeTheme = BOX_THEMES[boxTheme];
 
   return (
-    <div className="min-h-screen bg-[#F6F3EC] text-[#181614] pb-16">
-      {/* Minimalist Sumi Ink Toast */}
+    <div className="min-h-screen bg-white text-zinc-900 pb-16">
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#181614] text-[#FAF8F5] px-4 py-3 rounded-xl shadow-2xl border border-white/10 flex items-center gap-3 text-xs font-medium tracking-wide animate-pop-in">
+        <div className="fixed bottom-6 right-6 z-50 bg-zinc-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs font-medium tracking-wide animate-pop-in">
           <span className="w-2 h-2 rounded-full bg-[#C83E2B]" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Editorial Top Header (Zero Emoji Clutter) */}
-      <header className="sticky top-0 z-30 bg-[#F6F3EC]/90 backdrop-blur-md border-b border-[#E4DEC8]">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      {/* Editorial Top Header */}
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-zinc-200">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            {/* Traditional Vermilion Hanko Stamp */}
             <div
-              className="w-10 h-10 rounded-lg bg-[#C83E2B] text-[#FAF8F5] flex flex-col items-center justify-center leading-none border border-[#A32C1C] shadow-sm select-none"
+              className="w-11 h-11 rounded-lg bg-[#C83E2B] text-white flex flex-col items-center justify-center leading-none select-none"
               style={{ fontFamily: "'Noto Serif JP', serif" }}
             >
-              <span className="text-[11px] font-bold tracking-tighter">特製</span>
-              <span className="text-[11px] font-bold tracking-tighter">辨當</span>
+              <span className="text-xs font-bold">特製</span>
+              <span className="text-xs font-bold">辨當</span>
             </div>
 
             <div>
               <div className="flex items-center gap-2.5">
-                <h1 className="text-lg font-bold tracking-tight text-[#181614]">
+                <h1 className="text-2xl font-bold tracking-[-0.02em] text-zinc-900">
                   BentoCraft Atelier
                 </h1>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded bg-[#EFECE4] text-[#5C564F] border border-[#E4DEC8]">
+                <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-300">
                   Impeccable Craft UI
                 </span>
               </div>
-              <p className="text-xs text-[#6E675F]">
+              <p className="text-sm text-zinc-600 mt-0.5">
                 สตูดิโอออกแบบสำรับเบนโตะญี่ปุ่น • ลากวางภาพถ่ายอาหารจริงและคำนวณสมดุลโภชนาการ 5 สี (五色)
               </p>
             </div>
           </div>
 
-          {/* Curated Omakase Presets */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] uppercase tracking-wider font-semibold text-[#8C847A] hidden xl:inline mr-1">
-              Curated Sets
-            </span>
             {BENTO_PRESETS.map((preset) => (
               <button
                 key={preset.id}
                 onClick={() => applyPreset(preset.id)}
-                className="text-xs font-medium px-3 py-1.5 rounded-lg bg-[#FDFBF7] hover:bg-[#EFECE4] text-[#181614] border border-[#E4DEC8] transition-colors"
+                className="text-xs font-medium px-3 py-2 rounded-lg bg-zinc-50 hover:bg-zinc-100 text-zinc-800 border border-zinc-300 transition-colors"
               >
                 {preset.nameTh}
               </button>
             ))}
             <button
               onClick={randomizeBento}
-              className="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-[#181614] hover:bg-[#C83E2B] text-[#FAF8F5] transition-colors flex items-center gap-1.5"
+              className="text-xs font-semibold px-3.5 py-2 rounded-lg bg-zinc-900 hover:bg-[#C83E2B] text-white transition-colors flex items-center gap-1.5"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" strokeLinecap="round" strokeLinejoin="round" />
@@ -380,24 +374,26 @@ export function App() {
       </header>
 
       {/* Main 12-Column Architectural Workspace */}
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* LEFT COLUMN (4 cols): Oshinagaki Menu Drawer */}
-        <section className="lg:col-span-5 xl:col-span-4 bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] overflow-hidden flex flex-col">
-          <div className="p-4 sm:p-5 border-b border-[#E4DEC8]">
+        <section className="lg:col-span-5 xl:col-span-4 border border-zinc-200 rounded-2xl overflow-hidden flex flex-col bg-white">
+          <div className="p-5 border-b border-zinc-200">
             <div className="flex items-baseline justify-between gap-2 mb-1">
-              <h2 className="text-base font-bold text-[#181614] tracking-[-0.02em]">
+              <h2 className="text-base font-bold text-zinc-900 tracking-[-0.02em]">
                 รายการอาหาร (お品書き)
               </h2>
-              <span className="text-xs text-[#6E675F] tabular-nums">{filteredFoods.length} รายการ</span>
+              <span className="text-xs font-medium text-zinc-600 tabular-nums">
+                {filteredFoods.length} รายการ
+              </span>
             </div>
-            <p className="text-xs text-[#6E675F] mb-3.5">
+            <p className="text-sm text-zinc-600 mb-3.5">
               ลากภาพเมนูไปยังช่องเบนโตะ หรือคลิกเลือกเมนูแล้วกดที่ช่องเป้าหมาย
             </p>
 
-            {/* Clean Search Field */}
+            {/* Search Field with WCAG AA Compliant Placeholder */}
             <div className="relative mb-3">
               <svg
-                className="w-4 h-4 text-[#8C847A] absolute left-3 top-2.5 pointer-events-none"
+                className="w-4 h-4 text-zinc-600 absolute left-3 top-2.5 pointer-events-none"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -411,26 +407,26 @@ export function App() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="ค้นหาเมนู เช่น แซลมอน, วากิว, ไข่ม้วน, โมจิ..."
-                className="w-full pl-9 pr-8 py-2 text-xs bg-[#F6F3EC] border border-[#E4DEC8] rounded-lg focus:outline-none focus:border-[#181614] transition-colors"
+                className="w-full pl-9 pr-8 py-2 text-sm bg-zinc-50 text-zinc-900 placeholder:text-zinc-600 border border-zinc-300 rounded-lg focus:outline-none focus:border-zinc-900 transition-colors"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-2 text-xs text-[#8C847A] hover:text-[#181614] px-1"
+                  className="absolute right-2.5 top-2 text-xs text-zinc-600 hover:text-zinc-900 px-1"
                 >
                   ✕
                 </button>
               )}
             </div>
 
-            {/* Editorial Category Tabs */}
-            <div className="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar">
+            {/* Category Tabs (All text >= 12px) */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
               <button
                 onClick={() => setActiveCategory('all')}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                   activeCategory === 'all'
-                    ? 'bg-[#181614] text-[#FAF8F5]'
-                    : 'bg-[#F6F3EC] text-[#5C564F] hover:bg-[#EFECE4]'
+                    ? 'bg-zinc-900 text-white'
+                    : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
                 }`}
               >
                 ทั้งหมด
@@ -442,14 +438,14 @@ export function App() {
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
                       isActive
-                        ? 'bg-[#181614] text-[#FAF8F5]'
-                        : 'bg-[#F6F3EC] text-[#5C564F] hover:bg-[#EFECE4]'
+                        ? 'bg-zinc-900 text-white'
+                        : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
                     }`}
                   >
                     <span
-                      className={`text-[10px] ${isActive ? 'text-[#C83E2B]' : 'text-[#8C847A]'}`}
+                      className={`text-xs ${isActive ? 'text-white' : 'text-zinc-700'}`}
                       style={{ fontFamily: "'Noto Serif JP', serif" }}
                     >
                       {meta.kanji}
@@ -461,9 +457,8 @@ export function App() {
             </div>
           </div>
 
-          {/* Active Tap Selection Banner */}
           {selectedFoodForTap && (
-            <div className="px-4 py-2.5 bg-[#EFECE4] border-b border-[#E4DEC8] flex items-center justify-between gap-2 text-xs text-[#181614]">
+            <div className="px-4 py-2.5 bg-zinc-100 border-b border-zinc-200 flex items-center justify-between gap-2 text-xs text-zinc-900">
               <div className="flex items-center gap-2.5 min-w-0">
                 <span className="w-2 h-2 rounded-full bg-[#C83E2B] flex-shrink-0" />
                 <span className="truncate">
@@ -472,15 +467,15 @@ export function App() {
               </div>
               <button
                 onClick={() => setSelectedFoodForTap(null)}
-                className="text-[11px] font-semibold underline text-[#5C564F] hover:text-[#181614] flex-shrink-0"
+                className="text-xs font-semibold underline text-zinc-700 hover:text-zinc-900 flex-shrink-0"
               >
                 ยกเลิก
               </button>
             </div>
           )}
 
-          {/* Distilled Menu List (Hairline dividers instead of nested box soup) */}
-          <div className="divide-y divide-[#E4DEC8] max-h-[620px] overflow-y-auto">
+          {/* Distilled Menu List */}
+          <div className="divide-y divide-zinc-200 max-h-[640px] overflow-y-auto">
             {filteredFoods.map((food) => {
               const catMeta = IMPECCABLE_CATEGORY_META[food.category];
               const isSelectedForTap = selectedFoodForTap?.id === food.id;
@@ -502,47 +497,43 @@ export function App() {
                   onClick={() =>
                     setSelectedFoodForTap((prev) => (prev?.id === food.id ? null : food))
                   }
-                  className={`group p-3.5 sm:px-5 flex items-center gap-3.5 transition-colors cursor-grab active:cursor-grabbing select-none ${
-                    isSelectedForTap
-                      ? 'bg-[#EFECE4]/90 ring-1 ring-inset ring-[#B58448]'
-                      : 'hover:bg-[#F6F3EC]/80'
+                  className={`group p-4 sm:px-5 flex items-center gap-3.5 transition-colors cursor-grab active:cursor-grabbing select-none ${
+                    isSelectedForTap ? 'bg-zinc-100' : 'hover:bg-zinc-50'
                   }`}
                 >
-                  {/* 64x64 Square-Rounded Studio Food Photography */}
                   <div className="relative flex-shrink-0">
                     <FoodIllustration
                       foodId={food.id}
                       nameTh={food.nameTh}
                       emoji={food.emoji}
                       size="md"
-                      className="!w-16 !h-16 !rounded-xl shadow-sm"
+                      className="!w-16 !h-16 !rounded-xl"
                     />
                   </div>
 
-                  {/* Editorial Typography */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#8C847A]">
+                      <span className="text-xs font-medium text-zinc-600">
                         {catMeta.kanji} • {catMeta.labelTh}
                       </span>
-                      <span className="text-xs font-bold text-[#181614] tabular-nums">
+                      <span className="text-xs font-bold text-zinc-900 tabular-nums">
                         ฿{food.price}
                       </span>
                     </div>
 
-                    <h3 className="text-sm font-bold text-[#181614] truncate mt-0.5">
+                    <h3 className="text-sm font-bold text-zinc-900 truncate mt-0.5">
                       {food.nameTh}
                     </h3>
-                    <p className="text-[11px] text-[#6E675F] line-clamp-1 mt-0.5">
+                    <p className="text-sm text-zinc-600 line-clamp-1 mt-0.5">
                       {food.description}
                     </p>
 
-                    <div className="flex items-center justify-between gap-2 mt-2 text-[11px] tabular-nums text-[#6E675F]">
-                      <div className="flex items-center gap-2.5">
+                    <div className="flex items-center justify-between gap-2 mt-2 text-xs tabular-nums text-zinc-600">
+                      <div className="flex items-center gap-2">
                         <span>{food.calories} kcal</span>
-                        <span className="text-[#CFC7B8]">•</span>
+                        <span>•</span>
                         <span>P {food.protein}g</span>
-                        <span className="text-[#CFC7B8]">•</span>
+                        <span>•</span>
                         <span>C {food.carbs}g</span>
                       </div>
 
@@ -552,7 +543,7 @@ export function App() {
                           e.stopPropagation();
                           autoPlaceFood(food);
                         }}
-                        className="px-2.5 py-1 rounded-md bg-[#F6F3EC] group-hover:bg-[#181614] text-[#181614] group-hover:text-[#FAF8F5] border border-[#E4DEC8] group-hover:border-[#181614] text-[11px] font-semibold transition-colors"
+                        className="px-2.5 py-1 rounded-md bg-zinc-100 group-hover:bg-zinc-900 text-zinc-900 group-hover:text-white text-xs font-semibold transition-colors"
                       >
                         + จัดวาง
                       </button>
@@ -564,15 +555,15 @@ export function App() {
           </div>
         </section>
 
-        {/* RIGHT WORKSPACE (8 cols): Vessel Controls, Hero Bento Tray & Telemetry Ledger */}
-        <section className="lg:col-span-7 xl:col-span-8 space-y-5">
+        {/* RIGHT WORKSPACE (8 cols): Flat Architectural Sections (No Nested Cards) */}
+        <section className="lg:col-span-7 xl:col-span-8 space-y-6">
           {/* Vessel & Material Control Bar */}
-          <div className="bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] p-4 sm:px-6 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+          <div className="pb-5 border-b border-zinc-200 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
             <div>
-              <h3 className="text-xs font-bold text-[#181614] mb-2">
+              <h2 className="text-sm font-bold text-zinc-900 mb-2">
                 รูปทรงกล่องเบนโตะ
-              </h3>
-              <div className="flex flex-wrap gap-1.5">
+              </h2>
+              <div className="flex flex-wrap gap-2">
                 {BENTO_LAYOUTS.map((layout) => {
                   const active = layout.id === layoutId;
                   return (
@@ -581,12 +572,12 @@ export function App() {
                       onClick={() => setLayoutId(layout.id)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border tabular-nums ${
                         active
-                          ? 'bg-[#181614] text-[#FAF8F5] border-[#181614]'
-                          : 'bg-[#F6F3EC] hover:bg-[#EFECE4] text-[#5C564F] border-[#E4DEC8]'
+                          ? 'bg-zinc-900 text-white border-zinc-900'
+                          : 'bg-white hover:bg-zinc-100 text-zinc-700 border-zinc-300'
                       }`}
                     >
                       <span>{layout.nameTh}</span>
-                      <span className={`ml-1.5 text-[10px] ${active ? 'text-[#E4DEC8]' : 'text-[#6E675F]'}`}>
+                      <span className={`ml-1.5 text-xs ${active ? 'text-zinc-200' : 'text-zinc-600'}`}>
                         ({layout.slots.length} ช่อง)
                       </span>
                     </button>
@@ -596,10 +587,10 @@ export function App() {
             </div>
 
             <div>
-              <h3 className="text-xs font-bold text-[#181614] mb-2">
+              <h2 className="text-sm font-bold text-zinc-900 mb-2">
                 วัสดุภาชนะ
-              </h3>
-              <div className="flex flex-wrap items-center gap-1.5">
+              </h2>
+              <div className="flex flex-wrap items-center gap-2">
                 {(Object.keys(BOX_THEMES) as BoxThemeId[]).map((tid) => {
                   const t = BOX_THEMES[tid];
                   const active = boxTheme === tid;
@@ -609,11 +600,11 @@ export function App() {
                       onClick={() => setBoxTheme(tid)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center gap-2 ${
                         active
-                          ? 'bg-[#181614] text-[#FAF8F5] border-[#181614]'
-                          : 'bg-[#F6F3EC] hover:bg-[#EFECE4] text-[#5C564F] border-[#E4DEC8]'
+                          ? 'bg-zinc-900 text-white border-zinc-900'
+                          : 'bg-white hover:bg-zinc-100 text-zinc-700 border-zinc-300'
                       }`}
                     >
-                      <span className={`w-2.5 h-2.5 rounded-full border border-white/40 ${t.dotColor}`} />
+                      <span className={`w-2.5 h-2.5 rounded-full ${t.dotColor}`} />
                       <span>{t.nameTh}</span>
                     </button>
                   );
@@ -623,21 +614,21 @@ export function App() {
           </div>
 
           {/* THE HERO BENTO VESSEL CANVAS */}
-          <div className="bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] p-4 sm:p-6">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-[#E4DEC8]">
+          <div>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div>
                 <div className="flex items-baseline gap-2.5">
-                  <h2 className="text-base sm:text-lg font-bold text-[#181614]">
+                  <h2 className="text-lg font-bold text-zinc-900 tracking-[-0.02em]">
                     {currentLayout.nameTh}
                   </h2>
                   <span
-                    className="text-xs text-[#8C847A]"
+                    className="text-xs text-zinc-600"
                     style={{ fontFamily: "'Noto Serif JP', serif" }}
                   >
                     {currentLayout.nameJp}
                   </span>
                 </div>
-                <p className="text-xs text-[#6E675F] mt-0.5">{currentLayout.description}</p>
+                <p className="text-sm text-zinc-600 mt-0.5">{currentLayout.description}</p>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -645,16 +636,16 @@ export function App() {
                   onClick={() =>
                     setVisualMode((prev) => (prev === 'full-photo' ? 'plated' : 'full-photo'))
                   }
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F6F3EC] hover:bg-[#EFECE4] text-[#181614] border border-[#E4DEC8] transition-colors"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-900 transition-colors"
                 >
                   {visualMode === 'full-photo' ? 'มุมมอง: ภาพถ่ายเต็มช่อง' : 'มุมมอง: จัดจาน'}
                 </button>
                 <button
                   onClick={() => setIsLidClosed((prev) => !prev)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isLidClosed
-                      ? 'bg-[#C83E2B] text-white border-[#C83E2B]'
-                      : 'bg-[#F6F3EC] hover:bg-[#EFECE4] text-[#181614] border-[#E4DEC8]'
+                      ? 'bg-[#C83E2B] text-white'
+                      : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'
                   }`}
                 >
                   {isLidClosed ? 'เปิดฝากล่องเบนโตะ' : 'คาดสายโอบิ & ปิดฝา'}
@@ -665,43 +656,39 @@ export function App() {
                     setIsLidClosed(false);
                     showToast('ล้างอาหารในกล่องทั้งหมดแล้ว');
                   }}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#8C847A] hover:text-[#C83E2B] hover:bg-[#F6F3EC] transition-colors"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 hover:text-[#C83E2B] hover:bg-zinc-100 transition-colors"
                 >
                   ล้างกล่อง
                 </button>
               </div>
             </div>
 
-            {/* Concentric Bento Tray: Outer rounded-[28px] -> Inner rounded-[18px] -> Slot rounded-[12px] */}
+            {/* Concentric Bento Tray */}
             <div className={`relative rounded-[28px] transition-all duration-300 ${activeTheme.outerClass}`}>
               {isLidClosed ? (
-                <div className="min-h-[380px] rounded-[18px] bg-[#181614] flex flex-col items-center justify-center p-6 text-center text-[#FAF8F5] relative overflow-hidden animate-pop-in">
-                  {/* Traditional Japanese Washi & Vermilion Obi Sash */}
-                  <div className="absolute inset-y-0 w-32 bg-[#FAF8F5] border-x-2 border-[#C83E2B] shadow-2xl flex flex-col items-center justify-between py-6" />
+                <div className="min-h-[380px] rounded-[18px] bg-zinc-900 flex flex-col items-center justify-center p-6 text-center text-white relative overflow-hidden animate-pop-in">
+                  <div className="absolute inset-y-0 w-32 bg-white border-x-2 border-[#C83E2B] shadow-2xl" />
 
-                  <div className="relative z-10 bg-[#FDFBF7] text-[#181614] p-6 rounded-xl shadow-2xl border border-[#E4DEC8] max-w-sm w-full">
-                    <div
-                      className="text-[11px] font-bold tracking-[0.2em] text-[#C83E2B] mb-1.5"
-                      style={{ fontFamily: "'Noto Serif JP', serif" }}
-                    >
-                      謹製 • OMOTENASHI BENTO
-                    </div>
+                  <div className="relative z-10 bg-white text-zinc-900 p-6 rounded-xl shadow-2xl max-w-sm w-full">
+                    <h3 className="text-sm font-bold text-zinc-900 mb-2">
+                      ป้ายชื่อสายคาดกล่องเบนโตะ
+                    </h3>
                     <input
                       type="text"
                       value={customLabel}
                       onChange={(e) => setCustomLabel(e.target.value)}
-                      className="w-full text-center font-bold text-sm bg-[#F6F3EC] border border-[#E4DEC8] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#181614]"
+                      className="w-full text-center font-bold text-sm bg-zinc-50 border border-zinc-300 rounded-lg px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-900"
                     />
-                    <div className="mt-3 pt-3 border-t border-[#E4DEC8] flex items-center justify-center gap-4 text-xs text-[#5C564F] tabular-nums">
+                    <div className="mt-3 pt-3 border-t border-zinc-200 flex items-center justify-center gap-4 text-xs text-zinc-600 tabular-nums">
                       <span>{telemetry.filledCount}/{telemetry.totalSlots} ช่อง</span>
                       <span>•</span>
                       <span>{telemetry.calories} kcal</span>
                       <span>•</span>
-                      <span className="font-bold text-[#181614]">฿{telemetry.totalPrice}</span>
+                      <span className="font-bold text-zinc-900">฿{telemetry.totalPrice}</span>
                     </div>
                     <button
                       onClick={() => setIsLidClosed(false)}
-                      className="mt-4 w-full py-2 rounded-lg bg-[#181614] hover:bg-[#C83E2B] text-[#FAF8F5] text-xs font-semibold transition-colors"
+                      className="mt-4 w-full py-2 rounded-lg bg-zinc-900 hover:bg-[#C83E2B] text-white text-xs font-semibold transition-colors"
                     >
                       เปิดฝากล่องเพื่อแก้ไขสำรับ
                     </button>
@@ -748,11 +735,11 @@ export function App() {
                             placeFoodInSlot(slot.id, selectedFoodForTap);
                           }
                         }}
-                        className={`${slot.gridSpanClass} ${slot.minHeightClass} group relative rounded-[12px] border transition-all duration-200 overflow-hidden shadow-[inset_0_3px_12px_rgba(0,0,0,0.22)] ${
+                        className={`${slot.gridSpanClass} ${slot.minHeightClass} group relative rounded-[12px] border transition-all duration-200 overflow-hidden ${
                           activeTheme.slotBgClass
                         } ${
                           isOver
-                            ? 'ring-2 ring-[#C83E2B] border-[#C83E2B] scale-[1.005]'
+                            ? 'ring-2 ring-[#C83E2B] border-[#C83E2B]'
                             : isRecommendedTarget
                             ? 'ring-2 ring-[#B58448]'
                             : ''
@@ -771,9 +758,8 @@ export function App() {
                               setDraggedFromSlotId(null);
                               setDragOverSlotId(null);
                             }}
-                            className="relative w-full h-full min-h-[inherit] flex flex-col justify-between p-3 cursor-grab active:cursor-grabbing select-none animate-pop-in"
+                            className="relative w-full h-full min-h-[inherit] flex flex-col justify-between p-3.5 cursor-grab active:cursor-grabbing select-none animate-pop-in"
                           >
-                            {/* Full-Compartment Top-Down Studio Photo */}
                             <div className="absolute inset-0 z-0">
                               <FoodIllustration
                                 foodId={slotted.item.id}
@@ -782,12 +768,11 @@ export function App() {
                                 size="fill"
                                 className="!rounded-none w-full h-full"
                               />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/40 shadow-[inset_0_4px_20px_rgba(0,0,0,0.5)]" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/50" />
                             </div>
 
-                            {/* Top Index & Remove Action */}
                             <div className="relative z-10 flex items-center justify-between gap-2">
-                              <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded bg-black/55 text-white/90 backdrop-blur-md tabular-nums">
+                              <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-black/75 text-white tabular-nums">
                                 {slotNumber} • {recMeta.kanji}
                               </span>
                               <button
@@ -796,19 +781,18 @@ export function App() {
                                   e.stopPropagation();
                                   removeSlotItem(slot.id);
                                 }}
-                                className="opacity-85 hover:opacity-100 px-2 py-0.5 rounded bg-black/60 hover:bg-[#C83E2B] text-white text-[10px] font-medium backdrop-blur-md transition-colors"
+                                className="px-2.5 py-0.5 rounded bg-black/75 hover:bg-[#C83E2B] text-white text-xs font-medium transition-colors"
                               >
                                 นำออก
                               </button>
                             </div>
 
-                            {/* Layered Toppings with Real Circular Photos */}
                             {slotted.toppings.length > 0 && (
                               <div className="relative z-10 my-auto flex flex-wrap items-center justify-end gap-1.5">
                                 {slotted.toppings.map((top) => (
                                   <div
                                     key={top.id}
-                                    className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-black/70 text-white backdrop-blur-md border border-white/20 text-[10px] font-medium"
+                                    className="flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full bg-black/80 text-white text-xs font-medium"
                                   >
                                     <FoodIllustration
                                       foodId={top.id}
@@ -824,7 +808,7 @@ export function App() {
                                         e.stopPropagation();
                                         removeToppingFromSlot(slot.id, top.id);
                                       }}
-                                      className="hover:text-[#C83E2B] font-bold ml-0.5"
+                                      className="hover:text-red-300 font-bold ml-1"
                                     >
                                       ✕
                                     </button>
@@ -833,21 +817,20 @@ export function App() {
                               </div>
                             )}
 
-                            {/* Bottom Editorial Dish Caption */}
                             <div className="relative z-10 flex items-end justify-between gap-2 pt-2">
                               <div className="min-w-0">
                                 <div
-                                  className="text-[10px] text-[#E4DEC8] tracking-wider"
+                                  className="text-xs text-zinc-200"
                                   style={{ fontFamily: "'Noto Serif JP', serif" }}
                                 >
                                   {slotted.item.nameJp}
                                 </div>
-                                <h3 className="text-sm sm:text-base font-bold text-white leading-snug truncate">
+                                <h3 className="text-base font-bold text-white leading-snug truncate">
                                   {slotted.item.nameTh}
                                 </h3>
                               </div>
-                              <div className="text-right tabular-nums flex-shrink-0 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/15 text-white">
-                                <div className="text-[10px] text-[#E4DEC8]">
+                              <div className="text-right tabular-nums flex-shrink-0 bg-black/75 px-2.5 py-1 rounded-lg text-white">
+                                <div className="text-xs text-zinc-200">
                                   {slotted.item.calories +
                                     slotted.toppings.reduce((acc, t) => acc + t.calories, 0)}{' '}
                                   kcal
@@ -875,8 +858,8 @@ export function App() {
                             }}
                             className="p-3.5 h-full flex flex-col justify-between cursor-grab active:cursor-grabbing animate-pop-in"
                           >
-                            <div className="flex items-center justify-between gap-2 text-[11px] tabular-nums">
-                              <span className="font-semibold opacity-65">
+                            <div className="flex items-center justify-between gap-2 text-xs tabular-nums">
+                              <span className="font-semibold">
                                 {slotNumber} • {recMeta.labelTh}
                               </span>
                               <button
@@ -885,7 +868,7 @@ export function App() {
                                   e.stopPropagation();
                                   removeSlotItem(slot.id);
                                 }}
-                                className="text-[#C83E2B] hover:underline text-[11px] font-medium"
+                                className="text-[#C83E2B] hover:underline text-xs font-medium"
                               >
                                 นำออก
                               </button>
@@ -897,43 +880,42 @@ export function App() {
                                 nameTh={slotted.item.nameTh}
                                 emoji={slotted.item.emoji}
                                 size="lg"
-                                className="!rounded-2xl shadow-md"
+                                className="!rounded-2xl"
                               />
                               <h3 className="mt-2 text-sm font-bold leading-snug">
                                 {slotted.item.nameTh}
                               </h3>
-                              <p className="text-[11px] opacity-60">{slotted.item.nameJp}</p>
+                              <p className="text-sm text-zinc-600">{slotted.item.nameJp}</p>
                             </div>
 
-                            <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-current/10 tabular-nums opacity-80">
+                            <div className="flex items-center justify-between text-xs pt-1.5 border-t border-zinc-200 tabular-nums">
                               <span>{slotted.item.calories} kcal</span>
                               <span className="font-bold">฿{slotted.item.price}</span>
                             </div>
                           </div>
                         ) : (
-                          /* Distilled Empty Compartment Dropzone */
                           <div className="p-3.5 h-full min-h-[inherit] flex flex-col justify-between">
-                            <div className="flex items-center justify-between gap-2 text-[11px] tabular-nums opacity-60">
+                            <div className="flex items-center justify-between gap-2 text-xs tabular-nums">
                               <span className="font-bold">{slotNumber}</span>
                               <span style={{ fontFamily: "'Noto Serif JP', serif" }}>
                                 {recMeta.kanji} • {recMeta.labelTh}
                               </span>
                             </div>
 
-                            <div className="my-auto py-4 flex flex-col items-center justify-center text-center border border-dashed border-current/25 rounded-lg p-3 opacity-65">
+                            <div className="my-auto py-4 flex flex-col items-center justify-center text-center">
                               <span
-                                className="text-lg font-serif mb-1 opacity-70"
+                                className="text-lg font-serif mb-1"
                                 style={{ fontFamily: "'Noto Serif JP', serif" }}
                               >
                                 {recMeta.kanji}
                               </span>
-                              <p className="text-xs font-medium">ลากภาพเมนูมาวางในช่องนี้</p>
-                              <p className="text-[10px] opacity-70 mt-0.5">
+                              <p className="text-sm font-medium">ลากภาพเมนูมาวางในช่องนี้</p>
+                              <p className="text-sm mt-0.5">
                                 แนะนำหมวด: {recMeta.labelTh}
                               </p>
                             </div>
 
-                            <div className="text-[10px] opacity-45 tabular-nums">ว่าง</div>
+                            <div className="text-xs tabular-nums">ว่าง</div>
                           </div>
                         )}
                       </div>
@@ -943,205 +925,195 @@ export function App() {
               )}
             </div>
 
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-[#6E675F] px-1">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-zinc-600">
               <span>
                 สามารถลากสลับช่องอาหารภายในกล่องได้โดยตรง และลากหมวด <strong>薬味 ท็อปปิ้ง & ซอส</strong> วางซ้อนทับช่องที่มีอาหารได้
               </span>
-              <span className="tabular-nums font-medium text-[#181614]">
+              <span className="tabular-nums font-medium text-zinc-900">
                 จัดวางแล้ว {telemetry.filledCount} จาก {telemetry.totalSlots} ช่อง
               </span>
             </div>
           </div>
 
-          {/* ARCHITECTURAL TELEMETRY LEDGER (Impeccable Anti-Slop: Unified Hairline Grid, Zero Rainbow Cards) */}
-          <div className="bg-[#FDFBF7] rounded-2xl border border-[#E4DEC8] overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-[#E4DEC8]">
-              {/* Left 7 Cols: Nutritional Breakdown */}
-              <div className="md:col-span-7 p-5">
-                <div className="flex items-baseline justify-between mb-3">
-                  <h3 className="text-sm font-bold text-[#181614] tracking-[-0.02em]">
-                    สัดส่วนพลังงานและสารอาหารรวม
-                  </h3>
-                  <div className="text-right tabular-nums">
-                    <span className="text-2xl font-bold text-[#181614]">{telemetry.calories}</span>
-                    <span className="text-xs text-[#5C564F] ml-1">kcal / 850 kcal</span>
-                  </div>
-                </div>
-
-                {/* Single Intentional Sumi/Vermilion Progress Bar */}
-                <div className="w-full h-1.5 bg-[#EFECE4] rounded-full overflow-hidden mb-4">
-                  <div
-                    className="h-full bg-[#181614] transition-all duration-300"
-                    style={{ width: `${Math.min(100, (telemetry.calories / 850) * 100)}%` }}
-                  />
-                </div>
-
-                {/* Unified 3-Column Hairline Macro Grid */}
-                <div className="grid grid-cols-3 divide-x divide-[#E4DEC8] border border-[#E4DEC8] rounded-xl bg-[#F6F3EC]/60 tabular-nums">
-                  <div className="p-3">
-                    <div className="flex items-center gap-1.5 text-[11px] text-[#5C564F]">
-                      <span className="w-2 h-2 rounded-full bg-[#C83E2B]" />
-                      <span>โปรตีน (Protein)</span>
-                    </div>
-                    <div className="text-lg font-bold text-[#181614] mt-1">{telemetry.protein}g</div>
-                  </div>
-                  <div className="p-3">
-                    <div className="flex items-center gap-1.5 text-[11px] text-[#5C564F]">
-                      <span className="w-2 h-2 rounded-full bg-[#B58448]" />
-                      <span>คาร์บ (Carbs)</span>
-                    </div>
-                    <div className="text-lg font-bold text-[#181614] mt-1">{telemetry.carbs}g</div>
-                  </div>
-                  <div className="p-3">
-                    <div className="flex items-center gap-1.5 text-[11px] text-[#5C564F]">
-                      <span className="w-2 h-2 rounded-full bg-[#5C564F]" />
-                      <span>ไขมัน (Fat)</span>
-                    </div>
-                    <div className="text-lg font-bold text-[#181614] mt-1">{telemetry.fat}g</div>
-                  </div>
+          {/* ARCHITECTURAL TELEMETRY LEDGER (Flat Hairline Structure, Zero Nested Cards) */}
+          <div className="pt-6 border-t border-zinc-200 grid grid-cols-1 md:grid-cols-12 gap-8">
+            {/* Left 7 Cols: Nutritional Breakdown */}
+            <div className="md:col-span-7">
+              <div className="flex items-baseline justify-between mb-3">
+                <h2 className="text-base font-bold text-zinc-900 tracking-[-0.02em]">
+                  สัดส่วนพลังงานและสารอาหารรวม
+                </h2>
+                <div className="text-right tabular-nums">
+                  <span className="text-2xl font-bold text-zinc-900">{telemetry.calories}</span>
+                  <span className="text-xs text-zinc-600 ml-1">kcal / 850 kcal</span>
                 </div>
               </div>
 
-              {/* Right 5 Cols: Washoku Goshiki & Checkout */}
-              <div className="md:col-span-5 p-5 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <h3 className="text-sm font-bold text-[#181614] tracking-[-0.02em]">
-                      สมดุลสีอาหาร 5 สี (五色)
-                    </h3>
-                    <span className="text-xs font-bold text-[#181614] tabular-nums">
-                      ความสมดุล {telemetry.harmonyScore}/100
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#6E675F] mb-3">
-                    หลักสมดุลสีอาหาร 5 สีตามศาสตร์การปรุงอาหารญี่ปุ่นดั้งเดิม
-                  </p>
+              <div className="w-full h-2 bg-zinc-200 rounded-full overflow-hidden mb-5">
+                <div
+                  className="h-full bg-zinc-900 transition-all duration-300"
+                  style={{ width: `${Math.min(100, (telemetry.calories / 850) * 100)}%` }}
+                />
+              </div>
 
-                  <div className="grid grid-cols-5 gap-1.5 mb-4">
-                    {(Object.keys(WASHOKU_COLOR_META) as WashokuColor[]).map((colorKey) => {
-                      const meta = WASHOKU_COLOR_META[colorKey];
-                      const achieved = telemetry.colorsPresent.includes(colorKey);
-                      return (
-                        <div
-                          key={colorKey}
-                          title={meta.desc}
-                          className={`py-2 px-1 rounded-lg border text-center transition-all ${
-                            achieved
-                              ? 'bg-[#181614] text-[#FAF8F5] border-[#181614]'
-                              : 'bg-[#F6F3EC] text-[#8C847A] border-[#E4DEC8] opacity-60'
-                          }`}
-                        >
-                          <div className={`w-3 h-3 rounded-full mx-auto mb-1 ${meta.dotClass}`} />
-                          <div className="text-[10px] font-medium truncate">{meta.nameTh}</div>
-                        </div>
-                      );
-                    })}
+              <div className="grid grid-cols-3 divide-x divide-zinc-200 border-t border-b border-zinc-200 py-3.5 tabular-nums">
+                <div className="pr-4">
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-600">
+                    <span className="w-2 h-2 rounded-full bg-[#C83E2B]" />
+                    <span>โปรตีน (Protein)</span>
                   </div>
+                  <div className="text-lg font-bold text-zinc-900 mt-1">{telemetry.protein}g</div>
+                </div>
+                <div className="px-4">
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-600">
+                    <span className="w-2 h-2 rounded-full bg-[#B58448]" />
+                    <span>คาร์บ (Carbs)</span>
+                  </div>
+                  <div className="text-lg font-bold text-zinc-900 mt-1">{telemetry.carbs}g</div>
+                </div>
+                <div className="pl-4">
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-600">
+                    <span className="w-2 h-2 rounded-full bg-zinc-600" />
+                    <span>ไขมัน (Fat)</span>
+                  </div>
+                  <div className="text-lg font-bold text-zinc-900 mt-1">{telemetry.fat}g</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right 5 Cols: Washoku Goshiki & Checkout */}
+            <div className="md:col-span-5 flex flex-col justify-between">
+              <div>
+                <div className="flex items-baseline justify-between mb-1">
+                  <h2 className="text-base font-bold text-zinc-900 tracking-[-0.02em]">
+                    สมดุลสีอาหาร 5 สี (五色)
+                  </h2>
+                  <span className="text-xs font-bold text-zinc-900 tabular-nums">
+                    ความสมดุล {telemetry.harmonyScore}/100
+                  </span>
+                </div>
+                <p className="text-sm text-zinc-600 mb-3">
+                  สมดุลสีอาหาร 5 สีตามหลักโภชนาการญี่ปุ่น
+                </p>
+
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {(Object.keys(WASHOKU_COLOR_META) as WashokuColor[]).map((colorKey) => {
+                    const meta = WASHOKU_COLOR_META[colorKey];
+                    const achieved = telemetry.colorsPresent.includes(colorKey);
+                    return (
+                      <span
+                        key={colorKey}
+                        title={meta.desc}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                          achieved
+                            ? 'bg-zinc-900 text-white'
+                            : 'bg-zinc-100 text-zinc-600'
+                        }`}
+                      >
+                        <span className={`w-2.5 h-2.5 rounded-full ${meta.dotClass}`} />
+                        <span>{meta.nameTh}</span>
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-zinc-200 flex items-center justify-between gap-3">
+                <div className="tabular-nums">
+                  <div className="text-xs text-zinc-600">ยอดรวมสุทธิ</div>
+                  <div className="text-2xl font-bold text-zinc-900">฿{telemetry.totalPrice}</div>
+                </div>
+                <button
+                  onClick={() => setIsOrderModalOpen((prev) => !prev)}
+                  disabled={telemetry.filledCount === 0}
+                  className="flex-1 py-3 px-4 rounded-xl bg-[#C83E2B] hover:bg-[#A83221] disabled:opacity-40 text-white font-semibold text-xs tracking-wide transition-colors"
+                >
+                  {isOrderModalOpen ? 'ซ่อนใบสรุปรายการ' : 'ดูใบสรุปรายการสั่งทำ'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* INLINE EXPANDABLE RECEIPT LEDGER (No Unnecessary Interruption Modal) */}
+          {isOrderModalOpen && (
+            <div className="pt-6 border-t border-zinc-200 animate-pop-in">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200">
+                <h3 className="text-base font-bold text-zinc-900">{customLabel}</h3>
+                <button
+                  onClick={() => setIsOrderModalOpen(false)}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold text-zinc-700"
+                >
+                  ปิดใบสรุป
+                </button>
+              </div>
+
+              <div className="my-4 space-y-2.5 text-sm">
+                <div className="flex justify-between text-zinc-600 pb-2 border-b border-dashed border-zinc-200 tabular-nums">
+                  <span>
+                    ภาชนะ: {currentLayout.nameTh} ({activeTheme.nameTh})
+                  </span>
+                  <span className="font-semibold text-zinc-900">฿{currentLayout.baseBoxFee}</span>
                 </div>
 
-                <div className="pt-3 border-t border-[#E4DEC8] flex items-center justify-between gap-3">
-                  <div className="tabular-nums">
-                    <div className="text-[11px] text-[#6E675F]">ยอดรวมสุทธิ</div>
-                    <div className="text-2xl font-bold text-[#181614]">฿{telemetry.totalPrice}</div>
-                  </div>
+                {currentLayout.slots.map((slot) => {
+                  const entry = bentoSlots[slot.id];
+                  if (!entry) return null;
+                  return (
+                    <div key={slot.id} className="space-y-1">
+                      <div className="flex justify-between items-center font-medium text-zinc-900">
+                        <div className="flex items-center gap-2.5">
+                          <FoodIllustration
+                            foodId={entry.item.id}
+                            nameTh={entry.item.nameTh}
+                            emoji={entry.item.emoji}
+                            size="sm"
+                            className="!w-8 !h-8 !rounded-md"
+                          />
+                          <span>{entry.item.nameTh}</span>
+                        </div>
+                        <span className="tabular-nums font-bold">฿{entry.item.price}</span>
+                      </div>
+                      {entry.toppings.map((t) => (
+                        <div
+                          key={t.id}
+                          className="flex justify-between items-center text-xs text-zinc-600 pl-10 tabular-nums"
+                        >
+                          <span>+ {t.nameTh}</span>
+                          <span>฿{t.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="py-3 border-t border-zinc-200 flex flex-wrap items-center justify-between gap-4 text-sm tabular-nums">
+                <div className="text-zinc-600">
+                  พลังงานรวม <strong className="text-zinc-900">{telemetry.calories} kcal</strong> • สารอาหารหลัก (P / C / F):{' '}
+                  <strong className="text-zinc-900">
+                    {telemetry.protein}g / {telemetry.carbs}g / {telemetry.fat}g
+                  </strong>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-base font-bold text-zinc-900">
+                    ยอดชำระสุทธิ ฿{telemetry.totalPrice}
+                  </span>
                   <button
-                    onClick={() => setIsOrderModalOpen(true)}
-                    disabled={telemetry.filledCount === 0}
-                    className="flex-1 py-3 px-4 rounded-xl bg-[#C83E2B] hover:bg-[#A83221] disabled:opacity-40 text-white font-semibold text-xs tracking-wide transition-colors shadow-sm"
+                    onClick={() => {
+                      setIsOrderModalOpen(false);
+                      setIsLidClosed(true);
+                      showToast('บันทึกคำสั่งทำและคาดสายโอบิเรียบร้อย');
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-[#C83E2B] text-white font-semibold text-xs tracking-wide transition-colors"
                   >
-                    สรุปรายการสั่งทำเบนโตะ
+                    ยืนยันสั่งทำ & คาดสายโอบิปิดฝากล่อง
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </section>
       </main>
-
-      {/* ORDER RECEIPT MODAL */}
-      {isOrderModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/55 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#FDFBF7] border border-[#E4DEC8] rounded-2xl max-w-md w-full p-6 shadow-2xl animate-pop-in">
-            <div className="flex items-start justify-between pb-3 border-b border-[#E4DEC8]">
-              <h3 className="text-base font-bold text-[#181614]">{customLabel}</h3>
-              <button
-                onClick={() => setIsOrderModalOpen(false)}
-                className="w-7 h-7 rounded-lg bg-[#EFECE4] hover:bg-[#E4DEC8] flex items-center justify-center text-xs font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="my-4 space-y-2.5 text-xs">
-              <div className="flex justify-between text-[#6E675F] pb-2 border-b border-dashed border-[#E4DEC8] tabular-nums">
-                <span>
-                  ภาชนะ: {currentLayout.nameTh} ({activeTheme.nameTh})
-                </span>
-                <span className="font-semibold text-[#181614]">฿{currentLayout.baseBoxFee}</span>
-              </div>
-
-              {currentLayout.slots.map((slot) => {
-                const entry = bentoSlots[slot.id];
-                if (!entry) return null;
-                return (
-                  <div key={slot.id} className="space-y-1">
-                    <div className="flex justify-between items-center font-medium text-[#181614]">
-                      <div className="flex items-center gap-2.5">
-                        <FoodIllustration
-                          foodId={entry.item.id}
-                          nameTh={entry.item.nameTh}
-                          emoji={entry.item.emoji}
-                          size="sm"
-                          className="!w-8 !h-8 !rounded-md"
-                        />
-                        <span>{entry.item.nameTh}</span>
-                      </div>
-                      <span className="tabular-nums font-bold">฿{entry.item.price}</span>
-                    </div>
-                    {entry.toppings.map((t) => (
-                      <div
-                        key={t.id}
-                        className="flex justify-between items-center text-[11px] text-[#6E675F] pl-10 tabular-nums"
-                      >
-                        <span>+ {t.nameTh}</span>
-                        <span>฿{t.price}</span>
-                      </div>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-[#F6F3EC] border border-[#E4DEC8] text-xs space-y-1.5 tabular-nums mb-4">
-              <div className="flex justify-between">
-                <span className="text-[#6E675F]">พลังงานรวม:</span>
-                <span className="font-bold text-[#181614]">{telemetry.calories} kcal</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#6E675F]">สารอาหารหลัก (P / C / F):</span>
-                <span className="font-bold text-[#181614]">
-                  {telemetry.protein}g / {telemetry.carbs}g / {telemetry.fat}g
-                </span>
-              </div>
-              <div className="flex justify-between text-sm font-bold text-[#181614] pt-2 border-t border-[#E4DEC8]">
-                <span>ยอดชำระสุทธิ</span>
-                <span>฿{telemetry.totalPrice}</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                setIsOrderModalOpen(false);
-                setIsLidClosed(true);
-                showToast('บันทึกคำสั่งทำและคาดสายโอบิเรียบร้อย');
-              }}
-              className="w-full py-3 rounded-xl bg-[#181614] hover:bg-[#C83E2B] text-[#FAF8F5] font-semibold text-xs tracking-wide transition-colors"
-            >
-              ยืนยันสั่งทำ & คาดสายโอบิปิดฝากล่อง
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

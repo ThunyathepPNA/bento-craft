@@ -8,11 +8,16 @@
     caret-color: #C83E2B;
     text-underline-offset: 4px;
     font-variant-numeric: tabular-nums;
+    font-size: 14px;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   ::selection {
     background-color: rgba(200, 62, 43, 0.16);
-    color: #181614;
+    color: #18181B;
   }
 
   :focus-visible {
@@ -22,12 +27,12 @@
 }
 
 @keyframes popIn {
-  0% { transform: scale(0.96); opacity: 0; }
+  0% { transform: scale(0.97); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
 .animate-pop-in {
-  animation: popIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 ::-webkit-scrollbar {
@@ -35,12 +40,12 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F6F3EC;
+  background: #F4F4F5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D8D1C4;
+  background: #A1A1AA;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B58448;
+  background: #52525B;
 }
