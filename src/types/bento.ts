@@ -2,6 +2,8 @@ export type FoodCategory = 'stirfry' | 'ricebowl' | 'soup' | 'topping' | 'base';
 
 export type MeatTier = 'pork_chicken' | 'seafood' | 'egg' | 'base';
 
+export type MeatChoice = 'หมู' | 'หมูสับ' | 'ไก่' | 'ไก่กรอบ' | 'ทะเล' | 'กุ้ง' | 'ปลาดอลลี่' | 'เนื้อวัว';
+
 export interface FoodItem {
   id: string;
   menuNumber?: number;
@@ -9,13 +11,16 @@ export interface FoodItem {
   subNameTh: string;
   category: FoodCategory;
   meatTier: MeatTier;
-  meatOptions?: string;
+  availableMeats?: MeatChoice[];
+  defaultMeat?: MeatChoice;
+  meatPhotoMap?: Partial<Record<MeatChoice, { cropImage: string; fullBoxImage?: string }>>;
   calories: number;
   protein: number;
   carbs: number;
   fat: number;
   addonPrice: number; // used for egg toppings (+10, +15, +20)
   hasRealPhoto: boolean;
+  diecutImage?: string;
   cropImage?: string;
   fullBoxImage?: string;
   badgeText: string;
@@ -46,6 +51,7 @@ export interface BentoLayoutTemplate {
 
 export interface SlottedFood {
   item: FoodItem;
+  selectedMeat?: MeatChoice;
   toppings: FoodItem[];
 }
 
@@ -56,5 +62,5 @@ export interface RealBoxPreset {
   price: number;
   layoutId: BentoLayoutTemplate['id'];
   fullBoxPhoto: string;
-  slots: Record<string, { itemId: string; toppingIds?: string[] }>;
+  slots: Record<string, { itemId: string; selectedMeat?: MeatChoice; toppingIds?: string[] }>;
 }
