@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BentoCraft Atelier — 特製弁当工房 (Impeccable Craft UI)</title>
+    <title>ZeedKitchen BentoCraft — ซี้ดคิทเช่น แค่คิด...ก็อร่อย (จำลองจัดชุดข้าวกล่อง)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -28,13 +28,6 @@
         outline: 2px solid #C83E2B;
         outline-offset: 2px;
       }
-      @keyframes popIn {
-        0% { transform: scale(0.97); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-      }
-      .animate-pop-in {
-        animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
       ::-webkit-scrollbar { width: 6px; height: 6px; }
       ::-webkit-scrollbar-track { background: #F4F4F5; }
       ::-webkit-scrollbar-thumb { background: #A1A1AA; border-radius: 9999px; }
@@ -46,1109 +39,1006 @@
     <script type="text/babel">
       const { useState, useMemo } = React;
 
-      function FoodPhoto({ foodId, nameTh, size = 'md', className = '' }) {
-        const [err, setErr] = useState(false);
-        const sizeClass =
-          size === 'sm'
-            ? 'w-12 h-12 rounded-lg'
-            : size === 'lg'
-            ? 'w-32 h-32 sm:w-36 sm:h-36 rounded-2xl'
-            : size === 'fill'
-            ? 'w-full h-full rounded-none'
-            : 'w-16 h-16 rounded-xl';
-
-        if (err) {
-          return (
-            <div className={`${sizeClass} bg-zinc-100 border border-zinc-300 flex items-center justify-center text-xs font-serif text-zinc-600 ${className}`}>
-              料理
-            </div>
-          );
-        }
-
-        return (
-          <div className={`relative overflow-hidden bg-zinc-900/5 shadow-sm ring-1 ring-black/10 ${sizeClass} ${className}`}>
-            <img
-              src={`./public/images/foods/${foodId}.jpg`}
-              alt={nameTh || foodId}
-              onError={() => setErr(true)}
-              className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/20 bg-gradient-to-tr from-black/10 via-transparent to-white/10" />
-          </div>
-        );
-      }
-
-      const IMPECCABLE_CATEGORY_META = {
-        base: { labelTh: 'ข้าว & เส้น', kanji: '主食' },
-        main: { labelTh: 'โปรตีนหลัก', kanji: '主菜' },
-        side: { labelTh: 'เครื่องเคียง', kanji: '副菜' },
-        sweet: { labelTh: 'ของหวาน & ผลไม้', kanji: '甘味' },
-        topping: { labelTh: 'ท็อปปิ้ง & ซอส', kanji: '薬味' },
+      const ZEED_CATEGORY_META = {
+        stirfry: { labelTh: 'เมนูราดข้าว / ผัดเผ็ด', shortTh: 'ผัดเผ็ด/ราดข้าว' },
+        ricebowl: { labelTh: 'ข้าวหน้ายอดฮิต & เมนูพิเศษ', shortTh: 'ข้าวหน้ายอดฮิต' },
+        soup: { labelTh: 'ต้ม แกง & ซุป (ถ้วยฟอยล์)', shortTh: 'ต้ม/แกง/ซุป' },
+        topping: { labelTh: 'ท็อปปิ้งไข่สดใหม่', shortTh: 'ท็อปปิ้งไข่' },
+        base: { labelTh: 'ข้าวสวย & ผักเคียง', shortTh: 'ข้าว/เครื่องเคียง' },
       };
 
       const FOOD_ITEMS = [
         {
-          id: 'rice-koshihikari',
-          nameTh: 'ข้าวญี่ปุ่นโคชิฮิคาริโรยงาดำ',
-          nameJp: 'こしひかり白米',
+          id: 'base-jasmine-rice',
+          nameTh: 'ข้าวหอมมะลิร้อนๆ + แตงกวาเคียง',
+          subNameTh: 'ข้าวสวยเต็มช่องพร้อมแตงกวาสด',
           category: 'base',
-          calories: 230,
-          protein: 4,
-          carbs: 51,
-          fat: 1,
-          price: 25,
-          washokuColors: ['white', 'black'],
-          description: 'ข้าวญี่ปุ่นเมล็ดสั้นเหนียวนุ่ม หุงสดใหม่ โรยงาดำคั่วหอมและบ๊วยดองอุเมะโบชิ',
+          meatTier: 'base',
+          calories: 240,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/rice-jasmine.jpg',
         },
         {
-          id: 'rice-brown-quinoa',
-          nameTh: 'ข้าวกล้องออร์แกนิกผสมควินัว 3 สี',
-          nameJp: '玄米とキヌア',
+          id: 'base-salad-sauce',
+          nameTh: 'ผักสลัดสด + แตงกวา + น้ำจิ้มรสเด็ด',
+          subNameTh: 'ชุดผักเคียงและถ้วยน้ำจิ้มในกล่อง 3 ช่อง',
           category: 'base',
-          calories: 195,
-          protein: 6,
-          carbs: 39,
-          fat: 2,
-          price: 35,
-          washokuColors: ['yellow', 'black'],
-          description: 'คาร์บเชิงซ้อนดัชนีน้ำตาลต่ำ อยู่ท้องนาน เหมาะสำหรับสายเฮลตี้',
-        },
-        {
-          id: 'rice-garlic-butter',
-          nameTh: 'ข้าวผัดกระเทียมเนยฮอกไกโด',
-          nameJp: 'ガーリックライス',
-          category: 'base',
-          calories: 285,
-          protein: 5,
-          carbs: 48,
-          fat: 8,
-          price: 40,
-          washokuColors: ['yellow', 'green'],
-          description: 'ข้าวญี่ปุ่นผัดเนยสดฮอกไกโด กระเทียมเจียวกรอบ และต้นหอมญี่ปุ่นซอย',
-        },
-        {
-          id: 'noodle-yakisoba',
-          nameTh: 'เส้นยากิโซบะผัดซอสโอโคโนมิ',
-          nameJp: '特製焼きそば',
-          category: 'base',
-          calories: 260,
-          protein: 7,
-          carbs: 44,
-          fat: 6,
-          price: 45,
-          washokuColors: ['yellow', 'green', 'red'],
-          description: 'เส้นโซบะเหนียวนุ่มผัดกะหล่ำปลี แครอท และสาหร่ายอาโอโนริหอมกรุ่น',
-        },
-        {
-          id: 'main-salmon-teriyaki',
-          nameTh: 'แซลมอนนอร์เวย์ย่างเทอริยากิ',
-          nameJp: '鮭の照り焼き',
-          category: 'main',
-          calories: 290,
-          protein: 28,
-          carbs: 8,
-          fat: 16,
-          price: 115,
-          washokuColors: ['red', 'black'],
-          description: 'เนื้อปลาแซลมอนสดย่างหนังกรอบ เคลือบซอสเทอริยากิเคี่ยวสูตรโฮมเมด โรยงาขาว',
-        },
-        {
-          id: 'main-pork-tonkatsu',
-          nameTh: 'หมูคุโรบูตะทงคัตสึทอดกรอบ',
-          nameJp: '黒豚とんかつ',
-          category: 'main',
-          calories: 360,
-          protein: 25,
-          carbs: 18,
-          fat: 21,
-          price: 95,
-          washokuColors: ['yellow', 'black'],
-          description: 'สันนอกหมูดำคุโรบูตะชุบเกล็ดขนมปังสดปังโกะทอดสีทอง เสิร์ฟพร้อมซอสทงคัตสึ',
-        },
-        {
-          id: 'main-chicken-karaage',
-          nameTh: 'ไก่คาราอาเกะซอสส้มยูซุ',
-          nameJp: '柚子鶏の唐揚げ',
-          category: 'main',
-          calories: 275,
-          protein: 24,
-          carbs: 12,
-          fat: 14,
-          price: 85,
-          washokuColors: ['yellow', 'green'],
-          description: 'สะโพกไก่หมักขิงและโชยุ ทอดกรอบไร้มัน ราดซอสยูซุเปรี้ยวอมหวาน',
-        },
-        {
-          id: 'main-wagyu-yakiniku',
-          nameTh: 'เนื้อวากิวสไลซ์ย่างซอสยากินิกุ',
-          nameJp: '和牛焼肉カルビ',
-          category: 'main',
-          calories: 340,
-          protein: 26,
-          carbs: 7,
-          fat: 23,
-          price: 145,
-          washokuColors: ['red', 'black', 'white'],
-          description: 'เนื้อวากิวลายหินอ่อนย่างไฟแรงคลุกซอสยากินิกุ หอมกลิ่นถ่านและงาคั่ว',
-        },
-        {
-          id: 'main-ebi-tempura',
-          nameTh: 'กุ้งเทมปุระจักรพรรดิ 3 ตัว',
-          nameJp: '大海老天ぷら',
-          category: 'main',
-          calories: 250,
-          protein: 19,
-          carbs: 20,
-          fat: 10,
-          price: 110,
-          washokuColors: ['yellow', 'red'],
-          description: 'กุ้งทะเลตัวโตชุบแป้งเทมปุระเย็นจัด ทอดฟูกรอบไม่อมน้ำมัน พร้อมน้ำจิ้มเทนสึยุ',
-        },
-        {
-          id: 'side-tamagoyaki',
-          nameTh: 'ไข่ม้วนญี่ปุ่นดาชิทามาโกะ',
-          nameJp: '出汁巻き卵',
-          category: 'side',
-          calories: 120,
-          protein: 9,
-          carbs: 4,
-          fat: 7,
-          price: 35,
-          washokuColors: ['yellow'],
-          description: 'ไข่ม้วนสูตรเกียวโต ผสมน้ำซุปปลาโอคัตสึโอะดาชิ หอมหวานนุ่มชุ่มฉ่ำ',
-        },
-        {
-          id: 'side-wakame-salad',
-          nameTh: 'สลัดสาหร่ายวากาเมะและถั่วแระ',
-          nameJp: '海藻と枝豆サラダ',
-          category: 'side',
-          calories: 85,
-          protein: 6,
-          carbs: 8,
-          fat: 3,
-          price: 40,
-          washokuColors: ['green', 'black'],
-          description: 'สาหร่ายวากาเมะกรุบกรอบ ถั่วแระญี่ปุ่นเอดามะเมะ และน้ำสลัดงาญี่ปุ่นคั่ว',
-        },
-        {
-          id: 'side-gyoza',
-          nameTh: 'เกี๊ยวซ่าหมูย่างกระทะเหล็ก 4 ชิ้น',
-          nameJp: '焼き餃子',
-          category: 'side',
-          calories: 180,
-          protein: 8,
-          carbs: 21,
-          fat: 7,
-          price: 45,
-          washokuColors: ['white', 'yellow'],
-          description: 'เกี๊ยวซ่าไส้หมูสับและกะหล่ำปลี ทอดด้วยเทคนิคน้ำแป้งบางกรอบ',
-        },
-        {
-          id: 'side-kimchi-pickles',
-          nameTh: 'กิมจิโฮมเมด & ผักดองสึเคโมโนะ',
-          nameJp: '自家製キムチ漬物',
-          category: 'side',
-          calories: 45,
-          protein: 2,
-          carbs: 7,
-          fat: 0.5,
-          price: 30,
-          washokuColors: ['red', 'yellow'],
-          description: 'ช่วยตัดเลี่ยนและเพิ่มจุลินทรีย์ดีต่อลำไส้ รสเปรี้ยวเผ็ดกำลังดี',
-        },
-        {
-          id: 'sweet-matcha-mochi',
-          nameTh: 'ไดฟุกุมัทฉะอูจิไส้ถั่วแดงกวน',
-          nameJp: '宇治抹茶大福',
-          category: 'sweet',
-          calories: 145,
-          protein: 3,
-          carbs: 31,
-          fat: 1,
-          price: 45,
-          washokuColors: ['green', 'red'],
-          description: 'แป้งโมจิเหนียวนุ่มคลุกผงมัทฉะแท้ สอดไส้ถั่วแดงอะซึกิหวานน้อย',
-        },
-        {
-          id: 'sweet-amaou-strawberry',
-          nameTh: 'สตรอว์เบอร์รีอะมาโอ & กีวีสด',
-          nameJp: 'あまおう苺とキウイ',
-          category: 'sweet',
-          calories: 65,
-          protein: 1,
-          carbs: 15,
-          fat: 0.4,
-          price: 50,
-          washokuColors: ['red', 'green'],
-          description: 'ผลไม้สดคัดพิเศษ รสหวานอมเปรี้ยว ช่วยเติมความสดชื่นหลังมื้ออาหาร',
-        },
-        {
-          id: 'sweet-yuzu-jelly',
-          nameTh: 'พุดดิ้งเต้าหู้นมสดซอสส้มยูซุ',
-          nameJp: '柚子豆乳プリン',
-          category: 'sweet',
-          calories: 110,
-          protein: 5,
-          carbs: 16,
-          fat: 3,
-          price: 45,
-          washokuColors: ['white', 'yellow'],
-          description: 'พุดดิ้งเต้าหู้นมฮอกไกโดเนื้อเนียน ราดแยมส้มยูซุหอมสดชื่น',
-        },
-        {
-          id: 'top-tobiko',
-          nameTh: 'ไข่กุ้งโทบิโกะสีส้มกรุบกรอบ',
-          nameJp: 'とびっこ',
-          category: 'topping',
+          meatTier: 'base',
           calories: 35,
-          protein: 4,
-          carbs: 1,
-          fat: 1.5,
-          price: 25,
-          washokuColors: ['red'],
-          description: 'ลากวางทับช่องข้าวหรือโปรตีน เพื่อเพิ่มสัมผัสกรุบกรอบและสีสัน',
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/side-salad-sauce.jpg',
         },
         {
-          id: 'top-furikake',
-          nameTh: 'ผงโรยข้าวสาหร่ายปลาแห้งฟุริคาเกะ',
-          nameJp: '海苔ふりかけ',
-          category: 'topping',
-          calories: 25,
-          protein: 2,
-          carbs: 2,
-          fat: 1,
-          price: 15,
-          washokuColors: ['black', 'green'],
-          description: 'เพิ่มกลิ่นหอมอูมามิของสาหร่ายโนริ งาคั่ว และปลาโออบแห้ง',
+          id: 'menu-01-krapao-pork',
+          nameTh: '1. กะเพราหมูสับ (ผัดแห้ง หอมกรุ่น)',
+          subNameTh: 'หมู/ไก่/ทะเล • ตัวแทนรูปจริง: หมูสับ',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 340,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-krapao-pork.jpg',
+          fullBoxImage: './public/images/zeed/box-krapao-pork.jpg',
         },
         {
-          id: 'top-onsen-egg',
-          nameTh: 'ไข่ออนเซ็นเยิ้มๆ',
-          nameJp: '温泉卵',
-          category: 'topping',
+          id: 'menu-01-krapao-chicken',
+          nameTh: '1. กะเพราไก่ชิ้น (ผัดแห้ง หอมกรุ่น)',
+          subNameTh: 'หมู/ไก่/ทะเล • ตัวแทนรูปจริง: ไก่ชิ้น',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 310,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-krapao-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-krapao-chicken.jpg',
+        },
+        {
+          id: 'menu-02-garlic-chicken',
+          nameTh: '2. หมูกระเทียม / ไก่กระเทียม / ทะเล',
+          subNameTh: 'หอมกระเทียมเจียว • ตัวแทนรูปจริง: ไก่กระเทียม',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 320,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-garlic-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-garlic-chicken.jpg',
+        },
+        {
+          id: 'menu-03-panang-chicken',
+          nameTh: '3. พะแนง (หมู/ไก่/ทะเล)',
+          subNameTh: 'กะทิเข้มข้น หอมเครื่องแกง • ตัวแทนรูปจริง: พะแนงไก่',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 360,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-panang-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-panang-chicken-egg.jpg',
+        },
+        {
+          id: 'menu-04-choochee',
+          nameTh: '4. ฉู่ฉี่ (กุ้ง/ทะเล/ปลาดอลลี่)',
+          subNameTh: 'ราดซอสฉู่ฉี่เข้มข้น • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'seafood',
+          calories: 340,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-05-bell-pepper',
+          nameTh: '5. ผัดพริกหยวก (หมู/ไก่/ทะเล)',
+          subNameTh: 'เปรี้ยวหวานกำลังดี • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 290,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-06-black-pepper',
+          nameTh: '6. ผัดพริกไทยดำ (หมู/ไก่/ทะเล)',
+          subNameTh: 'หอมพริกไทยดำแท้ • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 310,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-07-green-curry',
+          nameTh: '7. เขียวหวานผัดแห้ง (หมู/ไก่/ทะเล)',
+          subNameTh: 'เครื่องแกงเข้มข้น • ตัวแทนรูปจริง: เขียวหวานไก่',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 350,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-green-curry-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-green-curry-chicken.jpg',
+        },
+        {
+          id: 'menu-08-sweet-sour',
+          nameTh: '8. ผัดเปรี้ยวหวาน (ไก่กรอบ/หมู/ทะเล)',
+          subNameTh: 'ครบรส อร่อย • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 330,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-09-dried-chili',
+          nameTh: '9. ผัดพริกแห้ง (หมู/ไก่/ทะเล)',
+          subNameTh: 'เผ็ดร้อน หอมพริกแห้ง • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 320,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-10-pad-cha',
+          nameTh: '10. ผัดฉ่า (หมู/ไก่/ทะเล)',
+          subNameTh: 'สมุนไพรจัดเต็ม • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 300,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-11-bamboo-chili',
+          nameTh: '11. ผัดเผ็ดหน่อไม้ (หมู/ไก่/ทะเล)',
+          subNameTh: 'เผ็ดร้อน หอมหน่อไม้ • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 310,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-12-khua-kling',
+          nameTh: '12. คั่วกลิ้งหมู',
+          subNameTh: 'ต้นตำรับใต้ เผ็ดร้อน • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 330,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-13-curry-powder-seafood',
+          nameTh: '13. ผัดผงกะหรี่ทะเล',
+          subNameTh: 'หอมผงกะหรี่ อร่อยกลมกล่อม • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'seafood',
+          calories: 380,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-14-beef-basil',
+          nameTh: '14. เนื้อผัดโหระพา',
+          subNameTh: 'เนื้อนุ่ม หอมใบโหระพา • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 350,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-15-mixed-veg',
+          nameTh: '15. ผัดผักรวมมิตร (หมู/ไก่/ทะเล)',
+          subNameTh: 'ผักสด อร่อย ได้ประโยชน์ • รอถ่ายรูปจริง',
+          category: 'stirfry',
+          meatTier: 'pork_chicken',
+          calories: 260,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-16-fried-pork-jaew',
+          nameTh: '16. ข้าวหน้าหมูทอด น้ำจิ้มแจ่ว',
+          subNameTh: 'หมูทอดกรอบนอกนุ่มใน • มีรูปจริง',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 420,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-fried-pork-jaew.jpg',
+          fullBoxImage: './public/images/zeed/box-fried-pork-jaew.jpg',
+        },
+        {
+          id: 'menu-17-saba-teriyaki',
+          nameTh: '17. ข้าวหน้าปลาซาบะ ซอสเทอริยากิ',
+          subNameTh: 'ปลาซาบะย่างหอม ซอสเข้มข้น • มีรูปจริง',
+          category: 'ricebowl',
+          meatTier: 'seafood',
+          calories: 410,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-saba-teriyaki.jpg',
+          fullBoxImage: './public/images/zeed/box-saba-teriyaki.jpg',
+        },
+        {
+          id: 'menu-18-pork-tonkatsu',
+          nameTh: '18. ข้าวหน้าหมูทอด ราดซอสทงคัตสึ',
+          subNameTh: 'สไตล์ญี่ปุ่น อร่อยเต็มคำ • รอถ่ายรูปจริง',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 440,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-19-chicken-fishsauce',
+          nameTh: '19. ข้าวหน้าไก่น้ำปลากวน (ไก่ชิ้นทอด)',
+          subNameTh: 'ไก่ทอดซอสน้ำปลา หอมหวาน • มีรูปจริง',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 400,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-chicken-fishsauce.jpg',
+          fullBoxImage: './public/images/zeed/box-chicken-fishsauce.jpg',
+        },
+        {
+          id: 'menu-19b-wings-fishsauce',
+          nameTh: '19. ข้าวหน้าปีกไก่ทอดน้ำปลา',
+          subNameTh: 'ปีกไก่กลางทอดน้ำปลาหนังกรอบ • มีรูปจริง',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 390,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-wings-fishsauce.jpg',
+          fullBoxImage: './public/images/zeed/box-wings-fishsauce.jpg',
+        },
+        {
+          id: 'menu-20-chicken-teriyaki',
+          nameTh: '20. ข้าวหน้าไก่ย่าง ซอสเทอริยากิ',
+          subNameTh: 'ไก่ย่างเนื้อนุ่ม ซอสฉ่ำ • มีรูปจริง (มุมตรง 90°)',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 395,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-chicken-teriyaki.jpg',
+          fullBoxImage: './public/images/zeed/box-chicken-teriyaki-steamed-egg.jpg',
+        },
+        {
+          id: 'menu-21-fish-flaked',
+          nameTh: '21. ข้าวหน้าปลาแกะ',
+          subNameTh: 'เมนูพิเศษ ปลาแกะสดใหม่ • รอถ่ายรูปจริง',
+          category: 'ricebowl',
+          meatTier: 'seafood',
+          calories: 360,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'menu-22-spicy-chicken-bowl',
+          nameTh: '22. ข้าวหน้าไก่แซ่บ',
+          subNameTh: 'ไก่แซ่บ เผ็ดจี๊ดจ๊าด • รอถ่ายรูปจริง',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 380,
+          addonPrice: 0,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'extra-shrimp-fried-rice',
+          nameTh: 'พิเศษ 1. ข้าวผัดกุ้งสด',
+          subNameTh: 'เพิ่มจากรูปถ่ายจริง • กุ้งตัวโตผัดไข่หอมกระทะ',
+          category: 'ricebowl',
+          meatTier: 'seafood',
+          calories: 430,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-shrimp-fried-rice.jpg',
+          fullBoxImage: './public/images/zeed/box-shrimp-fried-rice.jpg',
+        },
+        {
+          id: 'extra-dory-samrod',
+          nameTh: 'พิเศษ 2. ข้าวหน้าปลาดอลลี่กรอบสามรส',
+          subNameTh: 'เพิ่มจากรูปถ่ายจริง • ปลาดอลลี่ทอดกรอบราดซอสสามรส',
+          category: 'ricebowl',
+          meatTier: 'seafood',
+          calories: 390,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-dory-samrod.jpg',
+          fullBoxImage: './public/images/zeed/box-dory-samrod.jpg',
+        },
+        {
+          id: 'extra-fried-fish-nampla',
+          nameTh: 'พิเศษ 3. ข้าวหน้าปลาทอดน้ำปลาพริก',
+          subNameTh: 'เพิ่มจากรูปถ่ายจริง • เนื้อปลาชิ้นใหญ่ทอดกรอบนอกนุ่มใน',
+          category: 'ricebowl',
+          meatTier: 'seafood',
+          calories: 385,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-fried-fish-nampla.jpg',
+          fullBoxImage: './public/images/zeed/box-fried-fish-nampla.jpg',
+        },
+        {
+          id: 'extra-spiced-pork',
+          nameTh: 'พิเศษ 4. ข้าวหน้าหมูทอดทรงเครื่อง',
+          subNameTh: 'เพิ่มจากรูปถ่ายจริง • หมูสับปั้นก้อนทอดทรงเครื่อง',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 410,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-spiced-pork.jpg',
+          fullBoxImage: './public/images/zeed/box-spiced-pork-tomkha.jpg',
+        },
+        {
+          id: 'extra-braised-chicken',
+          nameTh: 'พิเศษ 5. ข้าวหน้าไก่ตุ๋นเห็ดหอม',
+          subNameTh: 'เพิ่มจากรูปถ่ายจริง • น่องไก่ตุ๋นเปื่อยนุ่มพร้อมเห็ดหอม',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 360,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-braised-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-braised-chicken.jpg',
+        },
+        {
+          id: 'extra-korean-chicken',
+          nameTh: 'พิเศษ 6. ข้าวหน้าไก่ทอดซอสเกาหลี',
+          subNameTh: 'เพิ่มจากรูปถ่ายจริง • ไก่กรอบเคลือบซอสเกาหลีโรยงาขาว',
+          category: 'ricebowl',
+          meatTier: 'pork_chicken',
+          calories: 415,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/dish-korean-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-korean-chicken-tomzaab.jpg',
+        },
+        {
+          id: 'menu-23-tofu-pork-soup',
+          nameTh: '23. ต้มจืดเต้าหู้หมูสับ',
+          subNameTh: 'น้ำซุปกลมกล่อม เต้าหู้เนื้อนุ่ม • มีรูปจริง',
+          category: 'soup',
+          meatTier: 'pork_chicken',
+          calories: 140,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/soup-tofu-pork.jpg',
+          fullBoxImage: './public/images/zeed/box-chicken-teriyaki-clear-soup.jpg',
+        },
+        {
+          id: 'menu-24-tomkha-chicken',
+          nameTh: '24. ต้มข่าไก่',
+          subNameTh: 'ซุปกะทิหอมกรุ่น เปรี้ยวเผ็ดกำลังดี • มีรูปจริง',
+          category: 'soup',
+          meatTier: 'pork_chicken',
+          calories: 190,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/soup-tomkha-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-spiced-pork-tomkha.jpg',
+        },
+        {
+          id: 'menu-25-tomyum-chicken',
+          nameTh: '25. ต้มยำไก่',
+          subNameTh: 'เผ็ดร้อน สมุนไพรไทย • มีรูปจริง',
+          category: 'soup',
+          meatTier: 'pork_chicken',
+          calories: 160,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/soup-tomyum-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-wings-fishsauce.jpg',
+        },
+        {
+          id: 'menu-26-tomzaab-chicken',
+          nameTh: '26. ต้มแซ่บไก่',
+          subNameTh: 'แซ่บสะใจ เผ็ดจัดจ้าน สมุนไพรไทย • มีรูปจริง',
+          category: 'soup',
+          meatTier: 'pork_chicken',
+          calories: 155,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/soup-tomzaab-chicken.jpg',
+          fullBoxImage: './public/images/zeed/box-korean-chicken-tomzaab.jpg',
+        },
+        {
+          id: 'extra-soup-chicken-clear',
+          nameTh: 'พิเศษ 7. ซุปไก่ใส่มันฝรั่งและแครอท',
+          subNameTh: 'เพิ่มจากรูปถ่ายจริง • น้ำซุปใสกลมกล่อมซดคล่องคอ',
+          category: 'soup',
+          meatTier: 'pork_chicken',
+          calories: 135,
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/soup-chicken-clear.jpg',
+          fullBoxImage: './public/images/zeed/box-fried-pork-jaew.jpg',
+        },
+        {
+          id: 'extra-soup-miso',
+          nameTh: 'พิเศษ 8. ซุปมิโสะญี่ปุ่น',
+          subNameTh: 'เพิ่มจากรูปถ่ายจริง • เสิร์ฟคู่เซ็ตปลาซาบะ/เทอริยากิ',
+          category: 'soup',
+          meatTier: 'pork_chicken',
           calories: 75,
-          protein: 6,
-          carbs: 1,
-          fat: 5,
-          price: 20,
-          washokuColors: ['yellow', 'white'],
-          description: 'ไข่ลวกอุณหภูมิออนเซ็น 65°C ไข่แดงครีมมี่คลุกข้าวอร่อยมาก',
+          addonPrice: 0,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/soup-miso.jpg',
+          fullBoxImage: './public/images/zeed/box-saba-teriyaki.jpg',
         },
         {
-          id: 'top-spicy-mayo',
-          nameTh: 'ซอสสไปซี่เมนไทโกะมาโย',
-          nameJp: '明太マヨソース',
+          id: 'top-fried-egg',
+          nameTh: 'ไข่ดาว',
+          subNameTh: 'เพิ่ม +10 บาท • มีรูปจริง',
           category: 'topping',
-          calories: 60,
-          protein: 1,
-          carbs: 2,
-          fat: 5,
-          price: 15,
-          washokuColors: ['red'],
-          description: 'ซอสมาโยไข่ปลาเมนไทโกะรสเผ็ดนัว เข้ากับของทอดและปลาแซลมอน',
+          meatTier: 'egg',
+          calories: 95,
+          addonPrice: 10,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/top-fried-egg.jpg',
+          fullBoxImage: './public/images/zeed/box-panang-chicken-egg.jpg',
+        },
+        {
+          id: 'top-omelet',
+          nameTh: 'ไข่เจียว',
+          subNameTh: 'เพิ่ม +15 บาท • รอถ่ายรูปจริง',
+          category: 'topping',
+          meatTier: 'egg',
+          calories: 140,
+          addonPrice: 15,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'top-boiled-egg',
+          nameTh: 'ไข่ต้มยางมะตูม',
+          subNameTh: 'เพิ่ม +15 บาท • รอถ่ายรูปจริง',
+          category: 'topping',
+          meatTier: 'egg',
+          calories: 75,
+          addonPrice: 15,
+          hasRealPhoto: false,
+        },
+        {
+          id: 'top-steamed-egg',
+          nameTh: 'ไข่ตุ๋นปูอัดทรงเครื่อง',
+          subNameTh: 'เพิ่ม +20 บาท • มีรูปจริง (ถ้วยฟอยล์/ท็อปปิ้ง)',
+          category: 'topping',
+          meatTier: 'egg',
+          calories: 130,
+          addonPrice: 20,
+          hasRealPhoto: true,
+          cropImage: './public/images/zeed/crops/top-steamed-egg.jpg',
+          fullBoxImage: './public/images/zeed/box-chicken-teriyaki-steamed-egg.jpg',
+        },
+        {
+          id: 'top-pan-egg',
+          nameTh: 'ไข่กระทะทรงเครื่อง',
+          subNameTh: 'เพิ่ม +20 บาท • รอถ่ายรูปจริง',
+          category: 'topping',
+          meatTier: 'egg',
+          calories: 165,
+          addonPrice: 20,
+          hasRealPhoto: false,
         },
       ];
 
       const BENTO_LAYOUTS = [
         {
-          id: 'classic-4',
-          nameTh: 'กล่องฮิโนกิ 4 ช่องมาตรฐาน',
-          nameJp: '定番四つ仕切り弁当',
-          description: 'สมดุลลงตัวด้วยช่องข้าวขนาดใหญ่ จานหลักโปรตีน เครื่องเคียง และของหวาน',
-          baseBoxFee: 15,
+          id: 'box-3slot',
+          nameTh: 'กล่องดำ 3 ช่อง (เซตจุใจ 80.- / รวมทะเล 100.- / ซีฟู้ด 120.-)',
+          subTitle: 'กับข้าวหลัก 1 + ต้ม/แกง/กับข้าวที่ 2 + ผักเคียง & น้ำจิ้ม',
           gridContainerClass: 'grid-cols-12',
           slots: [
             {
-              id: 'slot-1',
-              labelTh: 'ช่องที่ 1 • ข้าว & คาร์บหลัก',
-              recommendedCategory: 'base',
-              gridSpanClass: 'col-span-12 sm:col-span-6 sm:row-span-2',
-              minHeightClass: 'min-h-[220px] sm:min-h-[360px]',
-            },
-            {
-              id: 'slot-2',
-              labelTh: 'ช่องที่ 2 • จานหลักโปรตีน',
-              recommendedCategory: 'main',
-              gridSpanClass: 'col-span-12 sm:col-span-6',
-              minHeightClass: 'min-h-[175px]',
-            },
-            {
-              id: 'slot-3',
-              labelTh: 'ช่องที่ 3 • เครื่องเคียง',
-              recommendedCategory: 'side',
-              gridSpanClass: 'col-span-6 sm:col-span-3',
-              minHeightClass: 'min-h-[170px]',
-            },
-            {
-              id: 'slot-4',
-              labelTh: 'ช่องที่ 4 • ผลไม้ / ของหวาน',
-              recommendedCategory: 'sweet',
-              gridSpanClass: 'col-span-6 sm:col-span-3',
-              minHeightClass: 'min-h-[170px]',
-            },
-          ],
-        },
-        {
-          id: 'makunouchi-5',
-          nameTh: 'กล่องมาคุโนะอุจิ 5 ช่องพรีเมียม',
-          nameJp: '幕の内五つ仕切り御膳',
-          description: 'จัดเต็มสำหรับคนชอบความหลากหลาย มีช่องโปรตีนหลักถึง 2 ช่อง',
-          baseBoxFee: 25,
-          gridContainerClass: 'grid-cols-12',
-          slots: [
-            {
-              id: 'slot-1',
-              labelTh: 'ช่องที่ 1 • ข้าวญี่ปุ่น / เส้น',
-              recommendedCategory: 'base',
+              id: 'slot-side',
+              labelTh: 'ช่องผักเคียง & น้ำจิ้ม',
+              subLabel: 'สลัดผักสด แตงกวา มะเขือเทศ & น้ำจิ้ม',
               gridSpanClass: 'col-span-12 sm:col-span-5',
-              minHeightClass: 'min-h-[175px]',
+              minHeightClass: 'min-h-[165px]',
             },
             {
-              id: 'slot-2',
-              labelTh: 'ช่องที่ 2 • โปรตีนหลัก A',
-              recommendedCategory: 'main',
-              gridSpanClass: 'col-span-12 sm:col-span-4',
-              minHeightClass: 'min-h-[175px]',
+              id: 'slot-main',
+              labelTh: 'ช่องข้าวสวย & กับข้าวหลัก',
+              subLabel: 'ลากเมนูราดข้าว / ข้าวหน้ายอดฮิตมาวางช่องนี้',
+              gridSpanClass: 'col-span-12 sm:col-span-7 sm:row-span-2',
+              minHeightClass: 'min-h-[346px]',
             },
             {
-              id: 'slot-3',
-              labelTh: 'ช่องที่ 3 • เครื่องเคียง',
-              recommendedCategory: 'side',
-              gridSpanClass: 'col-span-6 sm:col-span-3',
-              minHeightClass: 'min-h-[175px]',
-            },
-            {
-              id: 'slot-4',
-              labelTh: 'ช่องที่ 4 • โปรตีนหลัก B',
-              recommendedCategory: 'main',
-              gridSpanClass: 'col-span-12 sm:col-span-7',
-              minHeightClass: 'min-h-[175px]',
-            },
-            {
-              id: 'slot-5',
-              labelTh: 'ช่องที่ 5 • ของหวาน / ผลไม้',
-              recommendedCategory: 'sweet',
-              gridSpanClass: 'col-span-6 sm:col-span-5',
-              minHeightClass: 'min-h-[175px]',
+              id: 'slot-foil',
+              labelTh: 'ช่องถ้วยฟอยล์ (ต้ม/แกง/กับข้าวที่ 2/ไข่ตุ๋น)',
+              subLabel: 'ลากต้มยำ / ต้มข่า / ต้มแซ่บ / ต้มจืด / ไข่ตุ๋น มาวางช่องนี้',
+              gridSpanClass: 'col-span-12 sm:col-span-5',
+              minHeightClass: 'min-h-[170px]',
+              isFoilCup: true,
             },
           ],
         },
         {
-          id: 'wellness-3',
-          nameTh: 'กล่องเฮลตี้ 3 ช่องคุมแคลอรี',
-          nameJp: 'ヘルシー三つ仕切り弁当',
-          description: 'กะทัดรัด เน้นสัดส่วน 2:1:1 ตามหลักโภชนาการคลีน',
-          baseBoxFee: 10,
+          id: 'box-2slot',
+          nameTh: 'กล่องดำ 2 ช่อง (เซตเริ่มต้น อิ่มคุ้ม 50.-)',
+          subTitle: 'ข้าวหอมมะลิ + กับข้าว 1 อย่าง (เพิ่มท็อปปิ้งไข่ได้)',
           gridContainerClass: 'grid-cols-12',
           slots: [
             {
-              id: 'slot-1',
-              labelTh: 'ช่องที่ 1 • โปรตีนไร้มัน',
-              recommendedCategory: 'main',
-              gridSpanClass: 'col-span-12 sm:col-span-6',
-              minHeightClass: 'min-h-[200px]',
+              id: 'slot-rice',
+              labelTh: 'ช่องข้าวหอมมะลิ (+ โปะท็อปปิ้งไข่ได้)',
+              subLabel: 'ลากไข่ดาว / ไข่เจียว / ไข่ต้ม มาวางทับช่องนี้ได้',
+              gridSpanClass: 'col-span-12 sm:col-span-5',
+              minHeightClass: 'min-h-[260px]',
             },
             {
-              id: 'slot-2',
-              labelTh: 'ช่องที่ 2 • คาร์บเชิงซ้อน',
-              recommendedCategory: 'base',
-              gridSpanClass: 'col-span-12 sm:col-span-6',
-              minHeightClass: 'min-h-[200px]',
-            },
-            {
-              id: 'slot-3',
-              labelTh: 'ช่องที่ 3 • สลัดผัก & ผลไม้สด',
-              recommendedCategory: 'side',
-              gridSpanClass: 'col-span-12',
-              minHeightClass: 'min-h-[160px]',
+              id: 'slot-dish',
+              labelTh: 'ช่องกับข้าวผัดเผ็ด / ราดข้าว 1 อย่าง',
+              subLabel: 'ลากกะเพรา / พะแนง / เขียวหวาน / กระเทียม มาวางช่องนี้',
+              gridSpanClass: 'col-span-12 sm:col-span-7',
+              minHeightClass: 'min-h-[260px]',
             },
           ],
         },
       ];
 
-      const WASHOKU_COLOR_META = {
-        red: { nameTh: 'สีแดง/ส้ม', dotClass: 'bg-[#C83E2B]' },
-        green: { nameTh: 'สีเขียว', dotClass: 'bg-emerald-600' },
-        yellow: { nameTh: 'สีเหลือง/ทอง', dotClass: 'bg-[#B58448]' },
-        white: { nameTh: 'สีขาว', dotClass: 'bg-white border border-zinc-400' },
-        black: { nameTh: 'สีดำ/เข้ม', dotClass: 'bg-zinc-900' },
-      };
+      const REAL_BOX_PRESETS = [
+        {
+          id: 'preset-teriyaki-steamed-egg',
+          nameTh: 'ไก่ย่างเทอริยากิ + ไข่ตุ๋นปูอัด (มุมตรง 90°)',
+          setTierName: 'เซตจุใจ 80.-',
+          price: 80,
+          layoutId: 'box-3slot',
+          fullBoxPhoto: './public/images/zeed/box-chicken-teriyaki-steamed-egg.jpg',
+          slots: {
+            'slot-side': { itemId: 'base-salad-sauce' },
+            'slot-main': { itemId: 'menu-20-chicken-teriyaki' },
+            'slot-foil': { itemId: 'top-steamed-egg' },
+          },
+        },
+        {
+          id: 'preset-shrimp-tomyum',
+          nameTh: 'ข้าวผัดกุ้งสด + ต้มยำไก่',
+          setTierName: 'เซตยอดนิยม รวมทะเล 100.-',
+          price: 100,
+          layoutId: 'box-3slot',
+          fullBoxPhoto: './public/images/zeed/box-shrimp-fried-rice.jpg',
+          slots: {
+            'slot-side': { itemId: 'base-salad-sauce' },
+            'slot-main': { itemId: 'extra-shrimp-fried-rice' },
+            'slot-foil': { itemId: 'menu-25-tomyum-chicken' },
+          },
+        },
+        {
+          id: 'preset-saba-miso',
+          nameTh: 'ปลาซาบะย่างเทอริยากิ + ซุปมิโสะ',
+          setTierName: 'เซตยอดนิยม รวมทะเล 100.-',
+          price: 100,
+          layoutId: 'box-3slot',
+          fullBoxPhoto: './public/images/zeed/box-saba-teriyaki.jpg',
+          slots: {
+            'slot-side': { itemId: 'base-salad-sauce' },
+            'slot-main': { itemId: 'menu-17-saba-teriyaki' },
+            'slot-foil': { itemId: 'extra-soup-miso' },
+          },
+        },
+        {
+          id: 'preset-dory-tomyum',
+          nameTh: 'ปลาดอลลี่กรอบสามรส + ต้มยำไก่',
+          setTierName: 'เซตยอดนิยม รวมทะเล 100.-',
+          price: 100,
+          layoutId: 'box-3slot',
+          fullBoxPhoto: './public/images/zeed/box-dory-samrod.jpg',
+          slots: {
+            'slot-side': { itemId: 'base-salad-sauce' },
+            'slot-main': { itemId: 'extra-dory-samrod' },
+            'slot-foil': { itemId: 'menu-25-tomyum-chicken' },
+          },
+        },
+        {
+          id: 'preset-panang-egg-2slot',
+          nameTh: 'ข้าวพะแนงไก่ + ไข่ดาว (กล่อง 2 ช่อง)',
+          setTierName: 'เซตเริ่มต้น 50.- (+ไข่ดาว 10.-)',
+          price: 60,
+          layoutId: 'box-2slot',
+          fullBoxPhoto: './public/images/zeed/box-panang-chicken-egg.jpg',
+          slots: {
+            'slot-rice': { itemId: 'base-jasmine-rice', toppingIds: ['top-fried-egg'] },
+            'slot-dish': { itemId: 'menu-03-panang-chicken' },
+          },
+        },
+        {
+          id: 'preset-krapao-pork-2slot',
+          nameTh: 'ข้าวกะเพราหมูสับ (กล่อง 2 ช่อง)',
+          setTierName: 'เซตเริ่มต้น อิ่มคุ้ม 50.-',
+          price: 50,
+          layoutId: 'box-2slot',
+          fullBoxPhoto: './public/images/zeed/box-krapao-pork.jpg',
+          slots: {
+            'slot-rice': { itemId: 'base-jasmine-rice' },
+            'slot-dish': { itemId: 'menu-01-krapao-pork' },
+          },
+        },
+      ];
 
-      const BOX_THEMES = {
-        hinoki: {
-          nameTh: 'ไม้สนฮิโนกิ',
-          outerClass:
-            'bg-gradient-to-br from-[#DCC09A] via-[#CEA97B] to-[#BC915D] p-3.5 shadow-[0_24px_48px_-12px_rgba(68,44,18,0.28)]',
-          dividerClass: 'gap-2.5 bg-[#8E6537] p-2.5 rounded-[18px]',
-          slotBgClass: 'bg-white border-[#C9A679] text-zinc-900',
-          dotColor: 'bg-[#C99E67]',
-        },
-        urushi: {
-          nameTh: 'ลงรักคุโระขอบทอง',
-          outerClass:
-            'bg-zinc-950 p-3.5 shadow-[0_28px_56px_-12px_rgba(0,0,0,0.45)]',
-          dividerClass: 'gap-2.5 bg-[#380E0C] p-2.5 rounded-[18px]',
-          slotBgClass: 'bg-zinc-900 border-[#4E1916] text-white',
-          dotColor: 'bg-zinc-900',
-        },
-        sakura: {
-          nameTh: 'เซรามิกชิการากิ',
-          outerClass:
-            'bg-zinc-200 p-3.5 shadow-[0_24px_48px_-12px_rgba(24,24,27,0.16)]',
-          dividerClass: 'gap-2.5 bg-zinc-300 p-2.5 rounded-[18px]',
-          slotBgClass: 'bg-white border-zinc-300 text-zinc-900',
-          dotColor: 'bg-zinc-400',
-        },
-      };
+      function FoodPhoto({ item, size = 'md', className = '' }) {
+        const [err, setErr] = useState(false);
+        const sizeClass =
+          size === 'sm'
+            ? 'w-14 h-14 rounded-lg'
+            : size === 'fill'
+            ? 'w-full h-full rounded-none'
+            : 'w-16 h-16 rounded-xl';
+
+        if (item.hasRealPhoto && item.cropImage && !err) {
+          return (
+            <div className={`relative overflow-hidden bg-zinc-900 select-none ${sizeClass} ${className}`}>
+              <img
+                src={item.cropImage}
+                alt={item.nameTh}
+                draggable={false}
+                onError={() => setErr(true)}
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+          );
+        }
+
+        return (
+          <div className={`relative flex flex-col items-center justify-center bg-zinc-900 text-zinc-100 border border-dashed border-zinc-600 p-2 text-center select-none ${sizeClass} ${className}`}>
+            <span className="text-xs font-bold text-amber-300">รอถ่ายรูปจริง</span>
+          </div>
+        );
+      }
 
       function App() {
-        const [layoutId, setLayoutId] = useState('classic-4');
-        const [boxTheme, setBoxTheme] = useState('hinoki');
-        const [visualMode, setVisualMode] = useState('full-photo');
+        const [layoutId, setLayoutId] = useState('box-3slot');
+        const [viewMode, setViewMode] = useState('compartment');
+        const [onlyRealPhotos, setOnlyRealPhotos] = useState(false);
         const [activeCategory, setActiveCategory] = useState('all');
         const [searchQuery, setSearchQuery] = useState('');
-        const [bentoSlots, setBentoSlots] = useState(() => ({
-          'slot-1': {
-            item: FOOD_ITEMS.find((f) => f.id === 'rice-koshihikari'),
-            toppings: [FOOD_ITEMS.find((f) => f.id === 'top-furikake')],
-          },
-          'slot-2': {
-            item: FOOD_ITEMS.find((f) => f.id === 'main-salmon-teriyaki'),
-            toppings: [FOOD_ITEMS.find((f) => f.id === 'top-tobiko')],
-          },
-          'slot-3': {
-            item: FOOD_ITEMS.find((f) => f.id === 'side-tamagoyaki'),
-            toppings: [],
-          },
-          'slot-4': {
-            item: FOOD_ITEMS.find((f) => f.id === 'sweet-matcha-mochi'),
-            toppings: [],
-          },
-        }));
+        const [boxCount, setBoxCount] = useState(10);
+        const [selectedSlotId, setSelectedSlotId] = useState('slot-main');
         const [draggedFoodId, setDraggedFoodId] = useState(null);
-        const [draggedFromSlotId, setDraggedFromSlotId] = useState(null);
-        const [dragOverSlotId, setDragOverSlotId] = useState(null);
-        const [selectedFoodForTap, setSelectedFoodForTap] = useState(null);
-        const [isLidClosed, setIsLidClosed] = useState(false);
-        const [customLabel, setCustomLabel] = useState('特製御弁当 • Folk’s Crafted Bento');
-        const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
-        const [toastMessage, setToastMessage] = useState(null);
+
+        const [slots, setSlots] = useState(() => {
+          const find = (id) => FOOD_ITEMS.find((f) => f.id === id);
+          return {
+            'slot-side': { item: find('base-salad-sauce'), toppings: [] },
+            'slot-main': { item: find('menu-20-chicken-teriyaki'), toppings: [] },
+            'slot-foil': { item: find('top-steamed-egg'), toppings: [] },
+            'slot-rice': { item: find('base-jasmine-rice'), toppings: [find('top-fried-egg')] },
+            'slot-dish': { item: find('menu-03-panang-chicken'), toppings: [] },
+          };
+        });
 
         const currentLayout = useMemo(
           () => BENTO_LAYOUTS.find((l) => l.id === layoutId) || BENTO_LAYOUTS[0],
           [layoutId]
         );
 
-        const showToast = (msg) => {
-          setToastMessage(msg);
-          window.setTimeout(() => {
-            setToastMessage((prev) => (prev === msg ? null : prev));
-          }, 2400);
-        };
-
         const filteredFoods = useMemo(() => {
           return FOOD_ITEMS.filter((item) => {
+            if (onlyRealPhotos && !item.hasRealPhoto) return false;
             const matchesCat = activeCategory === 'all' || item.category === activeCategory;
             const q = searchQuery.trim().toLowerCase();
-            const matchesQuery =
-              !q ||
-              item.nameTh.toLowerCase().includes(q) ||
-              item.nameJp.toLowerCase().includes(q) ||
-              item.description.toLowerCase().includes(q);
-            return matchesCat && matchesQuery;
+            return (
+              matchesCat &&
+              (!q ||
+                item.nameTh.toLowerCase().includes(q) ||
+                item.subNameTh.toLowerCase().includes(q))
+            );
           });
-        }, [activeCategory, searchQuery]);
+        }, [onlyRealPhotos, activeCategory, searchQuery]);
 
-        const placeFoodInSlot = (slotId, food, sourceSlotId = null) => {
-          if (isLidClosed) setIsLidClosed(false);
-          if (food.category === 'topping') {
-            const existing = bentoSlots[slot.id];
-            if (!existing) {
-              showToast('กรุณาเลือกอาหารหลักลงในช่องก่อนวางท็อปปิ้ง');
-              return;
-            }
-            if (existing.toppings.some((t) => t.id === food.id)) {
-              showToast(`มี ${food.nameTh} ในช่องนี้อยู่แล้ว`);
-              return;
-            }
-            setBentoSlots((prev) => ({
-              ...prev,
-              [slotId]: {
-                ...prev[slotId],
-                toppings: [...prev[slotId].toppings, food],
-              },
-            }));
-            showToast(`เพิ่มท็อปปิ้ง "${food.nameTh}" เรียบร้อย`);
-            setSelectedFoodForTap(null);
-            return;
+        const pricing = useMemo(() => {
+          let seafoodCount = 0;
+          let addonTotal = 0;
+          for (const slot of currentLayout.slots) {
+            const sl = slots[slot.id];
+            if (!sl) continue;
+            if (sl.item.meatTier === 'seafood') seafoodCount += 1;
+            for (const top of sl.toppings) addonTotal += top.addonPrice;
           }
+          let baseSetPrice = layoutId === 'box-2slot' ? (seafoodCount >= 1 ? 70 : 50) : seafoodCount >= 2 ? 120 : seafoodCount === 1 ? 100 : 80;
+          let setName =
+            layoutId === 'box-2slot'
+              ? 'เซตเริ่มต้น อิ่มคุ้ม 50.-'
+              : seafoodCount >= 2
+              ? 'เซตซีฟู้ดเลิฟเวอร์ 120.-'
+              : seafoodCount === 1
+              ? 'เซตยอดนิยม รวมทะเล 100.-'
+              : 'เซตจุใจ ได้ 2 อย่าง 80.-';
+          const unitPrice = baseSetPrice + addonTotal;
+          const mainSlotId = layoutId === 'box-3slot' ? 'slot-main' : 'slot-dish';
+          const referenceBoxPhoto =
+            slots[mainSlotId]?.item?.fullBoxImage ||
+            './public/images/zeed/box-chicken-teriyaki-steamed-egg.jpg';
 
-          setBentoSlots((prev) => {
-            const next = { ...prev };
-            if (sourceSlotId && sourceSlotId !== slotId) {
-              const targetExisting = next[slotId];
-              const sourceExisting = next[sourceSlotId];
-              if (sourceExisting) {
-                next[slotId] = sourceExisting;
-                if (targetExisting) next[sourceSlotId] = targetExisting;
-                else delete next[sourceSlotId];
-              }
-              return next;
-            }
-            next[slotId] = { item: food, toppings: [] };
-            return next;
-          });
-          showToast(`จัดวาง "${food.nameTh}" ลงในช่องเรียบร้อย`);
-          setSelectedFoodForTap(null);
-        };
-
-        const autoPlaceFood = (food) => {
-          if (food.category === 'topping') {
-            const firstFilled = currentLayout.slots.find((s) => Boolean(bentoSlots[s.id]));
-            if (!firstFilled) {
-              showToast('กรุณาใส่อาหารหลักในกล่องก่อนเพิ่มท็อปปิ้ง');
-              return;
-            }
-            placeFoodInSlot(firstFilled.id, food);
-            return;
-          }
-          const emptyMatching = currentLayout.slots.find(
-            (s) => s.recommendedCategory === food.category && !bentoSlots[s.id]
-          );
-          if (emptyMatching) return placeFoodInSlot(emptyMatching.id, food);
-          const anyEmpty = currentLayout.slots.find((s) => !bentoSlots[s.id]);
-          if (anyEmpty) return placeFoodInSlot(anyEmpty.id, food);
-          const matchingSlot =
-            currentLayout.slots.find((s) => s.recommendedCategory === food.category) ||
-            currentLayout.slots[0];
-          placeFoodInSlot(matchingSlot.id, food);
-        };
-
-        const randomizeBento = () => {
-          setIsLidClosed(false);
-          const nextSlots = {};
-          const toppingsPool = FOOD_ITEMS.filter((f) => f.category === 'topping');
-          currentLayout.slots.forEach((slot) => {
-            const pool = FOOD_ITEMS.filter((f) => f.category === slot.recommendedCategory);
-            const randomItem = pool[Math.floor(Math.random() * pool.length)];
-            if (randomItem) {
-              const maybeTopping =
-                (slot.recommendedCategory === 'base' || slot.recommendedCategory === 'main') &&
-                Math.random() > 0.35
-                  ? [toppingsPool[Math.floor(Math.random() * toppingsPool.length)]]
-                  : [];
-              nextSlots[slot.id] = { item: randomItem, toppings: maybeTopping };
-            }
-          });
-          setBentoSlots(nextSlots);
-          showToast('สุ่มจัดสำรับโอมากาเสะ (Omakase) เรียบร้อย');
-        };
-
-        const telemetry = useMemo(() => {
-          let calories = 0, protein = 0, carbs = 0, fat = 0, foodPrice = 0, filledCount = 0;
-          const colorSet = new Set();
-          currentLayout.slots.forEach((slot) => {
-            const entry = bentoSlots[slot.id];
-            if (!entry) return;
-            filledCount += 1;
-            [entry.item, ...entry.toppings].forEach((f) => {
-              calories += f.calories;
-              protein += f.protein;
-              carbs += f.carbs;
-              fat += f.fat;
-              foodPrice += f.price;
-              f.washokuColors.forEach((c) => colorSet.add(c));
-            });
-          });
-          const totalPrice = filledCount > 0 ? foodPrice + currentLayout.baseBoxFee : 0;
-          const fillRatio = filledCount / currentLayout.slots.length;
-          const colorRatio = colorSet.size / 5;
-          const harmonyScore = Math.round((fillRatio * 0.55 + colorRatio * 0.45) * 100);
           return {
-            calories,
-            protein,
-            carbs,
-            fat: Math.round(fat * 10) / 10,
-            totalPrice,
-            filledCount,
-            totalSlots: currentLayout.slots.length,
-            colorsPresent: Array.from(colorSet),
-            harmonyScore,
+            baseSetPrice,
+            addonTotal,
+            unitPrice,
+            grandTotal: unitPrice * boxCount,
+            setName,
+            referenceBoxPhoto,
           };
-        }, [bentoSlots, currentLayout]);
+        }, [currentLayout, slots, layoutId, boxCount]);
 
-        const activeTheme = BOX_THEMES[boxTheme];
+        const applyPreset = (preset) => {
+          setLayoutId(preset.layoutId);
+          const next = { ...slots };
+          Object.entries(preset.slots).forEach(([slotId, cfg]) => {
+            const item = FOOD_ITEMS.find((f) => f.id === cfg.itemId);
+            if (item) {
+              const tops = (cfg.toppingIds || [])
+                .map((id) => FOOD_ITEMS.find((f) => f.id === id))
+                .filter(Boolean);
+              next[slotId] = { item, toppings: tops };
+            }
+          });
+          setSlots(next);
+        };
+
+        const placeFood = (slotId, food) => {
+          const slotConfig = currentLayout.slots.find((s) => s.id === slotId);
+          if (food.category === 'topping' && !slotConfig?.isFoilCup) {
+            setSlots((prev) => {
+              const ex = prev[slotId];
+              if (!ex) return { ...prev, [slotId]: { item: food, toppings: [] } };
+              const has = ex.toppings.some((t) => t.id === food.id);
+              return {
+                ...prev,
+                [slotId]: {
+                  ...ex,
+                  toppings: has ? ex.toppings.filter((t) => t.id !== food.id) : [food],
+                },
+              };
+            });
+            return;
+          }
+          setSlots((prev) => ({
+            ...prev,
+            [slotId]: { item: food, toppings: prev[slotId]?.toppings || [] },
+          }));
+        };
 
         return (
-          <div className="min-h-screen bg-white text-zinc-900 pb-16">
-            {toastMessage && (
-              <div className="fixed bottom-6 right-6 z-50 bg-zinc-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs font-medium tracking-wide animate-pop-in">
-                <span className="w-2 h-2 rounded-full bg-[#C83E2B]" />
-                <span>{toastMessage}</span>
-              </div>
-            )}
-
-            <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-zinc-200">
-              <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+          <div className="min-h-screen bg-white text-zinc-900 flex flex-col">
+            <header className="sticky top-0 z-30 bg-white border-b border-zinc-200">
+              <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
-                  <div
-                    className="w-11 h-11 rounded-lg bg-[#C83E2B] text-white flex flex-col items-center justify-center leading-none select-none"
-                    style={{ fontFamily: "'Noto Serif JP', serif" }}
-                  >
-                    <span className="text-xs font-bold">特製</span>
-                    <span className="text-xs font-bold">辨當</span>
-                  </div>
+                  <img
+                    src="./public/images/zeed/logo.jpg"
+                    alt="ZeedKitchen Logo"
+                    className="w-12 h-12 rounded-xl object-cover border border-zinc-200"
+                  />
                   <div>
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2">
                       <h1 className="text-2xl font-bold tracking-[-0.02em] text-zinc-900">
-                        BentoCraft Atelier
+                        ZeedKitchen BentoCraft
                       </h1>
-                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-300">
-                        Impeccable Craft UI
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-lime-100 text-lime-900 border border-lime-300">
+                        แค่คิด...ก็อร่อย • จัดส่งทั่วระยอง
                       </span>
                     </div>
                     <p className="text-sm text-zinc-600 mt-0.5">
-                      สตูดิโอออกแบบสำรับเบนโตะญี่ปุ่น • ลากวางภาพถ่ายอาหารจริงและคำนวณสมดุลโภชนาการ 5 สี (五色)
+                      ระบบจำลองจัดชุดข้าวกล่องด้วยภาพถ่ายอาหารจริงจากครัวคุณพ่อ • โทร. 095-945-3591
                     </p>
                   </div>
                 </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    onClick={randomizeBento}
-                    className="text-xs font-semibold px-3.5 py-2 rounded-lg bg-zinc-900 hover:bg-[#C83E2B] text-white transition-colors"
-                  >
-                    สุ่มจัดสำรับ (Omakase)
-                  </button>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {REAL_BOX_PRESETS.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => applyPreset(p)}
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-300"
+                    >
+                      {p.nameTh} ({p.price}.-)
+                    </button>
+                  ))}
                 </div>
               </div>
             </header>
 
-            <main className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              {/* LEFT OSHINAGAKI MENU */}
-              <section className="lg:col-span-5 xl:col-span-4 border border-zinc-200 rounded-2xl overflow-hidden flex flex-col bg-white">
-                <div className="p-5 border-b border-zinc-200">
-                  <div className="flex items-baseline justify-between gap-2 mb-1">
-                    <h2 className="text-base font-bold text-zinc-900">รายการอาหาร (お品書き)</h2>
-                    <span className="text-xs font-medium text-zinc-600 tabular-nums">{filteredFoods.length} รายการ</span>
+            <main className="max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <section className="lg:col-span-5 bg-white rounded-2xl border border-zinc-200 overflow-hidden">
+                <div className="p-4 sm:p-5 border-b border-zinc-200">
+                  <div className="flex items-baseline justify-between mb-1">
+                    <h2 className="text-lg font-bold text-zinc-900">รายการเมนู ZeedKitchen</h2>
+                    <span className="text-xs font-medium text-zinc-600">{filteredFoods.length} รายการ</span>
                   </div>
-                  <p className="text-sm text-zinc-600 mb-3.5">
-                    ลากภาพเมนูไปยังช่องเบนโตะ หรือคลิกเลือกเมนูแล้วกดที่ช่องเป้าหมาย
+                  <p className="text-sm text-zinc-600 mb-3">
+                    ลากเมนูไปวางในหลุมกล่องเบนโตะ หรือคลิกที่เมนูเพื่อใส่ในช่องที่เลือกไว้
                   </p>
-
+                  <div className="flex gap-2 mb-3">
+                    <button
+                      onClick={() => setOnlyRealPhotos(false)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
+                        !onlyRealPhotos ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-zinc-100 text-zinc-700 border-zinc-300'
+                      }`}
+                    >
+                      แสดงทุกเมนู ({FOOD_ITEMS.length})
+                    </button>
+                    <button
+                      onClick={() => setOnlyRealPhotos(true)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
+                        onlyRealPhotos ? 'bg-lime-800 text-white border-lime-800' : 'bg-zinc-100 text-zinc-700 border-zinc-300'
+                      }`}
+                    >
+                      เฉพาะเมนูที่มีรูปถ่ายจริงแล้ว
+                    </button>
+                  </div>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="ค้นหาเมนู เช่น แซลมอน, วากิว, ไข่ม้วน, โมจิ..."
-                    className="w-full px-3.5 py-2 mb-3 text-sm bg-zinc-50 text-zinc-900 placeholder:text-zinc-600 border border-zinc-300 rounded-lg focus:outline-none focus:border-zinc-900"
+                    placeholder="ค้นหาเมนู เช่น กะเพรา, พะแนง, ซาบะ, ต้มยำ, ไข่ตุ๋น..."
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm text-zinc-900 placeholder:text-zinc-600 mb-3"
                   />
-
-                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                  <div className="flex gap-1.5 overflow-x-auto pb-1">
                     <button
                       onClick={() => setActiveCategory('all')}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
-                        activeCategory === 'all'
-                          ? 'bg-zinc-900 text-white'
-                          : 'bg-zinc-100 text-zinc-700'
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
+                        activeCategory === 'all' ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-zinc-100 text-zinc-700 border-zinc-300'
                       }`}
                     >
                       ทั้งหมด
                     </button>
-                    {Object.keys(IMPECCABLE_CATEGORY_META).map((cat) => {
-                      const meta = IMPECCABLE_CATEGORY_META[cat];
-                      const active = activeCategory === cat;
-                      return (
-                        <button
-                          key={cat}
-                          onClick={() => setActiveCategory(cat)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap flex items-center gap-1.5 ${
-                            active ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-700'
-                          }`}
-                        >
-                          <span className="text-xs" style={{ fontFamily: "'Noto Serif JP', serif" }}>
-                            {meta.kanji}
-                          </span>
-                          <span>{meta.labelTh}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="divide-y divide-zinc-200 max-h-[640px] overflow-y-auto">
-                  {filteredFoods.map((food) => {
-                    const catMeta = IMPECCABLE_CATEGORY_META[food.category];
-                    const isSelected = selectedFoodForTap?.id === food.id;
-                    return (
-                      <div
-                        key={food.id}
-                        draggable
-                        onDragStart={(e) => {
-                          e.dataTransfer.setData('text/plain', food.id);
-                          setDraggedFoodId(food.id);
-                          setDraggedFromSlotId(null);
-                        }}
-                        onDragEnd={() => {
-                          setDraggedFoodId(null);
-                          setDragOverSlotId(null);
-                        }}
-                        onClick={() =>
-                          setSelectedFoodForTap((prev) => (prev?.id === food.id ? null : food))
-                        }
-                        className={`group p-4 sm:px-5 flex items-center gap-3.5 transition-colors cursor-grab active:cursor-grabbing ${
-                          isSelected ? 'bg-zinc-100' : 'hover:bg-zinc-50'
+                    {Object.keys(ZEED_CATEGORY_META).map((k) => (
+                      <button
+                        key={k}
+                        onClick={() => setActiveCategory(k)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap border ${
+                          activeCategory === k ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-zinc-100 text-zinc-700 border-zinc-300'
                         }`}
                       >
-                        <FoodPhoto foodId={food.id} nameTh={food.nameTh} size="md" />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs font-medium text-zinc-600">
-                              {catMeta.kanji} • {catMeta.labelTh}
-                            </span>
-                            <span className="text-xs font-bold text-zinc-900 tabular-nums">฿{food.price}</span>
-                          </div>
-                          <h3 className="text-sm font-bold text-zinc-900 truncate mt-0.5">{food.nameTh}</h3>
-                          <p className="text-sm text-zinc-600 line-clamp-1 mt-0.5">{food.description}</p>
-                          <div className="flex items-center justify-between mt-2 text-xs tabular-nums text-zinc-600">
-                            <span>{food.calories} kcal • P {food.protein}g • C {food.carbs}g</span>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                autoPlaceFood(food);
-                              }}
-                              className="px-2.5 py-1 rounded-md bg-zinc-100 group-hover:bg-zinc-900 text-zinc-900 group-hover:text-white text-xs font-semibold transition-colors"
-                            >
-                              + จัดวาง
-                            </button>
-                          </div>
+                        {ZEED_CATEGORY_META[k].shortTh}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="p-3 max-h-[600px] overflow-y-auto divide-y divide-zinc-200">
+                  {filteredFoods.map((food) => (
+                    <div
+                      key={food.id}
+                      draggable
+                      onDragStart={() => setDraggedFoodId(food.id)}
+                      onClick={() => placeFood(selectedSlotId, food)}
+                      className="py-3 px-2.5 flex items-center gap-3.5 cursor-pointer hover:bg-zinc-50 rounded-xl"
+                    >
+                      <FoodPhoto item={food} size="sm" className="border border-zinc-300 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="text-sm font-semibold text-zinc-900 truncate">{food.nameTh}</span>
+                          <span className="text-xs font-bold text-zinc-900 shrink-0">
+                            {food.category === 'topping' ? `+${food.addonPrice} ฿` : food.meatTier === 'seafood' ? 'เรตทะเล' : 'เรตหมู/ไก่'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded border ${food.hasRealPhoto ? 'bg-lime-50 text-lime-900 border-lime-300' : 'bg-amber-50 text-amber-900 border-amber-300'}`}>
+                            {food.hasRealPhoto ? 'มีรูปถ่ายจริง' : 'รอถ่ายรูปจริง'}
+                          </span>
+                          <span className="text-xs text-zinc-600 truncate">{food.subNameTh}</span>
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               </section>
 
-              {/* RIGHT BENTO WORKSPACE */}
-              <section className="lg:col-span-7 xl:col-span-8 space-y-6">
-                <div className="pb-5 border-b border-zinc-200 flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <h2 className="text-sm font-bold text-zinc-900 mb-2">
-                      รูปทรงกล่องเบนโตะ
-                    </h2>
-                    <div className="flex flex-wrap gap-2">
-                      {BENTO_LAYOUTS.map((l) => (
-                        <button
-                          key={l.id}
-                          onClick={() => setLayoutId(l.id)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                            l.id === layoutId
-                              ? 'bg-zinc-900 text-white border-zinc-900'
-                              : 'bg-white text-zinc-700 border-zinc-300'
-                          }`}
-                        >
-                          {l.nameTh} ({l.slots.length} ช่อง)
-                        </button>
-                      ))}
-                    </div>
+              <section className="lg:col-span-7 space-y-5">
+                <div className="bg-white rounded-2xl border border-zinc-200 p-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex flex-wrap gap-2">
+                    {BENTO_LAYOUTS.map((l) => (
+                      <button
+                        key={l.id}
+                        onClick={() => {
+                          setLayoutId(l.id);
+                          setSelectedSlotId(l.id === 'box-3slot' ? 'slot-main' : 'slot-dish');
+                        }}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold border ${
+                          l.id === layoutId ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-zinc-100 text-zinc-800 border-zinc-300'
+                        }`}
+                      >
+                        {l.nameTh}
+                      </button>
+                    ))}
                   </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-zinc-900 mb-2">
-                      วัสดุภาชนะ
-                    </h2>
-                    <div className="flex flex-wrap gap-2">
-                      {Object.keys(BOX_THEMES).map((tid) => (
-                        <button
-                          key={tid}
-                          onClick={() => setBoxTheme(tid)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-2 ${
-                            boxTheme === tid
-                              ? 'bg-zinc-900 text-white border-zinc-900'
-                              : 'bg-white text-zinc-700 border-zinc-300'
-                          }`}
-                        >
-                          <span className={`w-2.5 h-2.5 rounded-full ${BOX_THEMES[tid].dotColor}`} />
-                          <span>{BOX_THEMES[tid].nameTh}</span>
-                        </button>
-                      ))}
-                    </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setViewMode('compartment')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
+                        viewMode === 'compartment' ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-zinc-100 text-zinc-700 border-zinc-300'
+                      }`}
+                    >
+                      โหมดจัดหลุมเบนโตะ
+                    </button>
+                    <button
+                      onClick={() => setViewMode('fullbox')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
+                        viewMode === 'fullbox' ? 'bg-[#C83E2B] text-white border-[#C83E2B]' : 'bg-zinc-100 text-zinc-700 border-zinc-300'
+                      }`}
+                    >
+                      ดูภาพถ่ายกล่องจริงทั้งใบ
+                    </button>
                   </div>
                 </div>
 
-                {/* HERO BENTO BOX */}
-                <div>
-                  <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                    <div>
-                      <div className="flex items-baseline gap-2.5">
-                        <h2 className="text-lg font-bold text-zinc-900">{currentLayout.nameTh}</h2>
-                        <span className="text-xs text-zinc-600" style={{ fontFamily: "'Noto Serif JP', serif" }}>
-                          {currentLayout.nameJp}
-                        </span>
-                      </div>
-                      <p className="text-sm text-zinc-600 mt-0.5">{currentLayout.description}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setVisualMode((p) => (p === 'full-photo' ? 'plated' : 'full-photo'))}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 text-zinc-900"
-                      >
-                        {visualMode === 'full-photo' ? 'มุมมอง: ภาพถ่ายเต็มช่อง' : 'มุมมอง: จัดจาน'}
-                      </button>
-                      <button
-                        onClick={() => setIsLidClosed((p) => !p)}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 text-zinc-900"
-                      >
-                        {isLidClosed ? 'เปิดฝากล่องเบนโตะ' : 'คาดสายโอบิ & ปิดฝา'}
-                      </button>
-                      <button
-                        onClick={() => setBentoSlots({})}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 hover:text-[#C83E2B]"
-                      >
-                        ล้างกล่อง
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className={`rounded-[28px] transition-all ${activeTheme.outerClass}`}>
-                    {isLidClosed ? (
-                      <div className="min-h-[380px] rounded-[18px] bg-zinc-900 flex flex-col items-center justify-center p-6 text-center text-white relative overflow-hidden animate-pop-in">
-                        <div className="absolute inset-y-0 w-32 bg-white border-x-2 border-[#C83E2B] shadow-2xl" />
-                        <div className="relative z-10 bg-white text-zinc-900 p-6 rounded-xl shadow-2xl max-w-sm w-full">
-                          <h3 className="text-sm font-bold text-zinc-900 mb-2">ป้ายชื่อสายคาดกล่องเบนโตะ</h3>
-                          <input
-                            type="text"
-                            value={customLabel}
-                            onChange={(e) => setCustomLabel(e.target.value)}
-                            className="w-full text-center font-bold text-sm bg-zinc-50 border border-zinc-300 rounded-lg px-3 py-2"
-                          />
-                          <div className="mt-3 pt-3 border-t border-zinc-200 text-xs text-zinc-600 tabular-nums">
-                            {telemetry.filledCount}/{telemetry.totalSlots} ช่อง • {telemetry.calories} kcal • ฿{telemetry.totalPrice}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className={`grid ${currentLayout.gridContainerClass} ${activeTheme.dividerClass}`}>
+                {viewMode === 'compartment' ? (
+                  <div className="bg-zinc-50 rounded-2xl border border-zinc-200 p-4 sm:p-6">
+                    <div className="rounded-[28px] bg-zinc-950 p-3.5 sm:p-4 border-2 border-zinc-800">
+                      <div className={`grid ${currentLayout.gridContainerClass} gap-3 bg-zinc-900 p-3 rounded-[20px]`}>
                         {currentLayout.slots.map((slot, idx) => {
-                          const slotted = bentoSlots[slot.id];
-                          const recMeta = IMPECCABLE_CATEGORY_META[slot.recommendedCategory];
-                          const isOver = dragOverSlotId === slot.id;
-                          const slotNumber = String(idx + 1).padStart(2, '0');
+                          const sl = slots[slot.id];
                           return (
                             <div
                               key={slot.id}
-                              onDragOver={(e) => {
-                                e.preventDefault();
-                                setDragOverSlotId(slot.id);
+                              onDragOver={(e) => e.preventDefault()}
+                              onDrop={() => {
+                                const f = FOOD_ITEMS.find((x) => x.id === draggedFoodId);
+                                if (f) placeFood(slot.id, f);
                               }}
-                              onDragLeave={() => setDragOverSlotId(null)}
-                              onDrop={(e) => {
-                                e.preventDefault();
-                                setDragOverSlotId(null);
-                                const id = e.dataTransfer.getData('text/plain') || draggedFoodId;
-                                const food = FOOD_ITEMS.find((f) => f.id === id);
-                                if (food) placeFoodInSlot(slot.id, food, draggedFromSlotId);
-                                setDraggedFoodId(null);
-                                setDraggedFromSlotId(null);
-                              }}
-                              onClick={() => {
-                                if (selectedFoodForTap) placeFoodInSlot(slot.id, selectedFoodForTap);
-                              }}
-                              className={`${slot.gridSpanClass} ${slot.minHeightClass} group relative rounded-[12px] border overflow-hidden transition-all ${
-                                activeTheme.slotBgClass
-                              } ${isOver ? 'ring-2 ring-[#C83E2B]' : ''}`}
+                              onClick={() => setSelectedSlotId(slot.id)}
+                              className={`${slot.gridSpanClass} ${slot.minHeightClass} relative rounded-[14px] overflow-hidden cursor-pointer flex flex-col justify-between ${
+                                slot.isFoilCup ? 'border-4 border-zinc-300 bg-zinc-950' : 'border-2 border-zinc-800 bg-zinc-950'
+                              } ${selectedSlotId === slot.id ? 'ring-2 ring-lime-400' : ''}`}
                             >
-                              {slotted && visualMode === 'full-photo' ? (
-                                <div
-                                  draggable
-                                  onDragStart={(e) => {
-                                    e.dataTransfer.setData('text/plain', slotted.item.id);
-                                    setDraggedFoodId(slotted.item.id);
-                                    setDraggedFromSlotId(slot.id);
-                                  }}
-                                  className="relative w-full h-full min-h-[inherit] flex flex-col justify-between p-3.5 cursor-grab animate-pop-in"
-                                >
-                                  <div className="absolute inset-0 z-0">
-                                    <FoodPhoto foodId={slotted.item.id} nameTh={slotted.item.nameTh} size="fill" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/50" />
+                              {sl && (
+                                <div className="relative w-full h-full flex-1 flex flex-col justify-between min-h-[inherit]">
+                                  <div className="absolute inset-0">
+                                    <FoodPhoto item={sl.item} size="fill" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/45" />
                                   </div>
-
-                                  <div className="relative z-10 flex items-center justify-between gap-2">
-                                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-black/75 text-white tabular-nums">
-                                      {slotNumber} • {recMeta.kanji}
+                                  <div className="relative z-10 p-2.5 flex justify-between">
+                                    <span className="px-2.5 py-0.5 rounded bg-black/80 text-white text-xs font-semibold">
+                                      หลุม 0{idx + 1} • {slot.labelTh}
                                     </span>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setBentoSlots((prev) => {
-                                          const n = { ...prev };
-                                          delete n[slot.id];
-                                          return n;
-                                        });
-                                      }}
-                                      className="px-2.5 py-0.5 rounded bg-black/75 hover:bg-[#C83E2B] text-white text-xs font-medium"
-                                    >
-                                      นำออก
-                                    </button>
                                   </div>
-
-                                  {slotted.toppings.length > 0 && (
-                                    <div className="relative z-10 my-auto flex flex-wrap justify-end gap-1.5">
-                                      {slotted.toppings.map((t) => (
-                                        <div
-                                          key={t.id}
-                                          className="flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full bg-black/80 text-white text-xs font-medium"
-                                        >
-                                          <FoodPhoto foodId={t.id} nameTh={t.nameTh} size="sm" className="!w-5 !h-5 !rounded-full" />
-                                          <span>+{t.nameTh}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
-
-                                  <div className="relative z-10 flex items-end justify-between gap-2 pt-2">
-                                    <div>
-                                      <div className="text-xs text-zinc-200" style={{ fontFamily: "'Noto Serif JP', serif" }}>
-                                        {slotted.item.nameJp}
-                                      </div>
-                                      <h3 className="text-base font-bold text-white leading-snug">
-                                        {slotted.item.nameTh}
-                                      </h3>
-                                    </div>
-                                    <div className="text-right bg-black/75 px-2.5 py-1 rounded-lg text-white tabular-nums">
-                                      <div className="text-xs text-zinc-200">{slotted.item.calories} kcal</div>
-                                      <div className="text-xs font-bold">฿{slotted.item.price}</div>
-                                    </div>
+                                  <div className="relative z-10 p-3">
+                                    <p className="text-sm font-bold text-white">{sl.item.nameTh}</p>
+                                    <p className="text-xs text-zinc-200">{sl.item.subNameTh}</p>
                                   </div>
-                                </div>
-                              ) : slotted ? (
-                                <div className="p-3.5 h-full flex flex-col justify-between">
-                                  <div className="flex justify-between text-xs tabular-nums">
-                                    <span>{slotNumber} • {recMeta.labelTh}</span>
-                                    <button
-                                      onClick={() =>
-                                        setBentoSlots((prev) => {
-                                          const n = { ...prev };
-                                          delete n[slot.id];
-                                          return n;
-                                        })
-                                      }
-                                      className="text-[#C83E2B]"
-                                    >
-                                      นำออก
-                                    </button>
-                                  </div>
-                                  <div className="my-auto py-2 flex flex-col items-center text-center">
-                                    <FoodPhoto foodId={slotted.item.id} nameTh={slotted.item.nameTh} size="lg" />
-                                    <h3 className="mt-2 text-sm font-bold">{slotted.item.nameTh}</h3>
-                                  </div>
-                                  <div className="flex justify-between text-xs tabular-nums">
-                                    <span>{slotted.item.calories} kcal</span>
-                                    <span className="font-bold">฿{slotted.item.price}</span>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="p-3.5 h-full min-h-[inherit] flex flex-col justify-between">
-                                  <div className="flex justify-between text-xs tabular-nums">
-                                    <span className="font-bold">{slotNumber}</span>
-                                    <span style={{ fontFamily: "'Noto Serif JP', serif" }}>{recMeta.kanji} • {recMeta.labelTh}</span>
-                                  </div>
-                                  <div className="my-auto py-4 text-center">
-                                    <div className="text-lg font-serif mb-1" style={{ fontFamily: "'Noto Serif JP', serif" }}>{recMeta.kanji}</div>
-                                    <p className="text-sm font-medium">ลากภาพเมนูมาวางในช่องนี้</p>
-                                  </div>
-                                  <div className="text-xs">ว่าง</div>
                                 </div>
                               )}
                             </div>
                           );
                         })}
                       </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* ARCHITECTURAL TELEMETRY LEDGER */}
-                <div className="pt-6 border-t border-zinc-200 grid grid-cols-1 md:grid-cols-12 gap-8">
-                  <div className="md:col-span-7">
-                    <div className="flex items-baseline justify-between mb-3">
-                      <h2 className="text-base font-bold text-zinc-900">สัดส่วนพลังงานและสารอาหารรวม</h2>
-                      <div className="text-right tabular-nums">
-                        <span className="text-2xl font-bold text-zinc-900">{telemetry.calories}</span>
-                        <span className="text-xs text-zinc-600 ml-1">kcal / 850 kcal</span>
-                      </div>
-                    </div>
-                    <div className="w-full h-2 bg-zinc-200 rounded-full overflow-hidden mb-5">
-                      <div className="h-full bg-zinc-900 transition-all duration-300" style={{ width: `${Math.min(100, (telemetry.calories / 850) * 100)}%` }} />
-                    </div>
-                    <div className="grid grid-cols-3 divide-x divide-zinc-200 border-t border-b border-zinc-200 py-3.5 tabular-nums">
-                      <div className="pr-4">
-                        <div className="flex items-center gap-1.5 text-xs text-zinc-600">
-                          <span className="w-2 h-2 rounded-full bg-[#C83E2B]" />
-                          <span>โปรตีน (Protein)</span>
-                        </div>
-                        <div className="text-lg font-bold text-zinc-900 mt-1">{telemetry.protein}g</div>
-                      </div>
-                      <div className="px-4">
-                        <div className="flex items-center gap-1.5 text-xs text-zinc-600">
-                          <span className="w-2 h-2 rounded-full bg-[#B58448]" />
-                          <span>คาร์บ (Carbs)</span>
-                        </div>
-                        <div className="text-lg font-bold text-zinc-900 mt-1">{telemetry.carbs}g</div>
-                      </div>
-                      <div className="pl-4">
-                        <div className="flex items-center gap-1.5 text-xs text-zinc-600">
-                          <span className="w-2 h-2 rounded-full bg-zinc-600" />
-                          <span>ไขมัน (Fat)</span>
-                        </div>
-                        <div className="text-lg font-bold text-zinc-900 mt-1">{telemetry.fat}g</div>
-                      </div>
                     </div>
                   </div>
+                ) : (
+                  <div className="bg-zinc-50 rounded-2xl border border-zinc-200 p-4 sm:p-6">
+                    <img
+                      src={pricing.referenceBoxPhoto}
+                      alt="Real Box"
+                      className="w-full h-[400px] object-cover rounded-2xl"
+                    />
+                  </div>
+                )}
 
-                  <div className="md:col-span-5 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-baseline justify-between mb-1">
-                        <h2 className="text-base font-bold text-zinc-900">
-                          สมดุลสีอาหาร 5 สี (五色)
-                        </h2>
-                        <span className="text-xs font-bold text-zinc-900 tabular-nums">
-                          ความสมดุล {telemetry.harmonyScore}/100
-                        </span>
-                      </div>
-                      <p className="text-sm text-zinc-600 mb-3">
-                        สมดุลสีอาหาร 5 สีตามหลักโภชนาการญี่ปุ่น
-                      </p>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {Object.keys(WASHOKU_COLOR_META).map((colorKey) => {
-                          const meta = WASHOKU_COLOR_META[colorKey];
-                          const achieved = telemetry.colorsPresent.includes(colorKey);
-                          return (
-                            <span
-                              key={colorKey}
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                                achieved ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-600'
-                              }`}
-                            >
-                              <span className={`w-2.5 h-2.5 rounded-full ${meta.dotClass}`} />
-                              <span>{meta.nameTh}</span>
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-zinc-200 flex items-center justify-between gap-3">
-                      <div className="tabular-nums">
-                        <div className="text-xs text-zinc-600">ยอดรวมสุทธิ</div>
-                        <div className="text-2xl font-bold text-zinc-900">฿{telemetry.totalPrice}</div>
-                      </div>
+                <div className="bg-white rounded-2xl border border-zinc-200 p-5 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-base font-bold text-zinc-900">{pricing.setName}</h3>
+                    <p className="text-sm text-zinc-600">
+                      ราคาต่อกล่อง ฿{pricing.unitPrice} • สั่ง {boxCount} กล่อง รวมทั้งสิ้น ฿{pricing.grandTotal.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex gap-1.5">
+                    {[1, 10, 20, 50, 100].map((q) => (
                       <button
-                        onClick={() => setIsOrderModalOpen((p) => !p)}
-                        className="flex-1 py-3 px-4 rounded-xl bg-[#C83E2B] hover:bg-[#A83221] text-white font-semibold text-xs tracking-wide transition-colors"
+                        key={q}
+                        onClick={() => setBoxCount(q)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
+                          boxCount === q ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-zinc-100 text-zinc-700 border-zinc-300'
+                        }`}
                       >
-                        {isOrderModalOpen ? 'ซ่อนใบสรุปรายการ' : 'ดูใบสรุปรายการสั่งทำ'}
+                        {q} กล่อง
                       </button>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </section>

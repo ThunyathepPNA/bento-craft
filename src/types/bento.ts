@@ -1,26 +1,27 @@
-export type FoodCategory = 'base' | 'main' | 'side' | 'sweet' | 'topping';
+export type FoodCategory = 'stirfry' | 'ricebowl' | 'soup' | 'topping' | 'base';
 
-export type WashokuColor = 'white' | 'red' | 'green' | 'yellow' | 'black';
+export type MeatTier = 'pork_chicken' | 'seafood' | 'egg' | 'base';
 
 export interface FoodItem {
   id: string;
+  menuNumber?: number;
   nameTh: string;
-  nameJp: string;
+  subNameTh: string;
   category: FoodCategory;
+  meatTier: MeatTier;
+  meatOptions?: string;
   calories: number;
   protein: number;
   carbs: number;
   fat: number;
-  price: number;
-  emoji: string;
-  accentBg: string;
-  accentBorder: string;
+  addonPrice: number; // used for egg toppings (+10, +15, +20)
+  hasRealPhoto: boolean;
+  cropImage?: string;
+  fullBoxImage?: string;
   badgeText: string;
-  washokuColors: WashokuColor[];
   description: string;
   spicyLevel?: number;
   isPopular?: boolean;
-  isHealthy?: boolean;
 }
 
 export interface BentoSlotConfig {
@@ -30,14 +31,15 @@ export interface BentoSlotConfig {
   recommendedCategory: FoodCategory;
   gridSpanClass: string;
   minHeightClass: string;
+  isFoilCup?: boolean;
 }
 
 export interface BentoLayoutTemplate {
-  id: 'classic-4' | 'makunouchi-5' | 'wellness-3';
+  id: 'box-2slot' | 'box-3slot';
   nameTh: string;
-  nameJp: string;
+  subTitle: string;
   description: string;
-  baseBoxFee: number;
+  basePriceText: string;
   gridContainerClass: string;
   slots: BentoSlotConfig[];
 }
@@ -45,16 +47,14 @@ export interface BentoLayoutTemplate {
 export interface SlottedFood {
   item: FoodItem;
   toppings: FoodItem[];
-  portionNote?: string;
 }
 
-export type BoxThemeId = 'hinoki' | 'urushi' | 'sakura';
-
-export interface BentoPreset {
+export interface RealBoxPreset {
   id: string;
   nameTh: string;
-  tagline: string;
-  badge: string;
+  setTierName: string;
+  price: number;
   layoutId: BentoLayoutTemplate['id'];
+  fullBoxPhoto: string;
   slots: Record<string, { itemId: string; toppingIds?: string[] }>;
 }

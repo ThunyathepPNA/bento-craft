@@ -1,15 +1,22 @@
-# PRODUCT.md — BentoCraft Studio (特製弁当工房)
+# PRODUCT.md — ZeedKitchen BentoCraft (ซี้ดคิทเช่น — แค่คิด...ก็อร่อย)
 
-## 1. Product Vision
-**BentoCraft Studio** is a tactile, interactive Japanese Bento Box configurator and nutritional composition studio. Users curate authentic Japanese dishes into handcrafted Bento compartments via direct manipulation (Drag-and-Drop + Click-to-Place) while balancing macronutrients and traditional **Washoku Goshiki (五色 — Five-Color Culinary Harmony)**.
+## 1. Product Vision & Core Pain Point
+**ZeedKitchen BentoCraft** คือระบบจำลองจัดชุดข้าวกล่องเบนโตะแบบ Interactive (Drag-and-Drop + Click-to-Place) สำหรับร้าน **ZeedKitchen (ซี้ดคิทเช่น — แค่คิด...ก็อร่อย | จัดส่งทั่วระยอง โทร. 095-945-3591)**
 
-## 2. Target Persona & Aesthetic Positioning
-- **Brand Archetype**: Kyoto Craft Atelier meets Modern Nutritional Precision (inspired by *DEAN & DELUCA Kyoto*, *Muji Found*, and *Toraya*).
-- **Tone**: Calm, tactile, editorial, appetizing, and intentional.
-- **Anti-Goals**: Never look like a generic gamified food delivery template or an emoji-cluttered AI dashboard.
+### Pain Point ที่ระบบนี้เข้ามาแก้ไขโดยตรง:
+- **ปัญหาเดิม**: เวลาลูกค้าสั่งทำข้าวกล่องจัดเบรก/ประชุม/อีเวนต์ ลูกค้ามักจะถามว่า *"ถ้าเอาเมนูนี้ คู่กับแกง/ต้มอันนี้ หรือเพิ่มไข่ดาว/ไข่ตุ๋น หน้าตาออกมาจะเป็นยังไง และตกกล่องละกี่บาท?"* ทำให้คุณพ่อต้องเข้าครัวทำอาหารจริงมาจัดใส่กล่องเพื่อถ่ายรูปส่งให้ลูกค้าดูเป็นเดโม่ทุกครั้ง เสียทั้งเวลาและต้นทุนวัตถุดิบ
+- **วิธีแก้ปัญหาด้วย ZeedKitchen BentoCraft**:
+  1. นำ **ภาพถ่ายข้าวกล่องของจริงฝีมือคุณพ่อ** มาครอปแยกแต่ละช่อง (ช่องกับข้าวหลัก, ช่องถ้วยฟอยล์ต้ม/แกง/ซุป, ช่องข้าวหอมมะลิ, ช่องผักสลัดเคียง+น้ำจิ้ม, และท็อปปิ้งไข่) เพื่อให้ลูกค้าลากมาผสมข้ามคู่กันได้เองบนหน้าเว็บทันที
+  2. คำนวณราคาตาม **เรตเซ็ตจริงของร้าน (50.- / 80.- / 100.- / 120.-)** และบวกค่า **ท็อปปิ้งไข่ (+10.- / +15.- / +20.-)** พร้อมคูณจำนวนกล่องและคัดลอกใบสรุปรายการส่งเข้า LINE ร้านได้ทันที
+  3. ไม่อ้างอิงภาพกราฟิกที่เจนจาก AI ในแผ่นป้ายเมนู เพื่อไม่ให้ลูกค้าสับสนกับหน้าตาอาหารจริง โดยเมนูที่ยังไม่ได้ถ่ายรูปจริงจะแสดงสถานะ *"รอถ่ายรูปอาหารจริง"* อย่างชัดเจน พร้อมรายงานสรุปให้ทางร้านเช็คได้ว่าต้องถ่ายเมนูไหนเพิ่ม
 
-## 3. Core User Journey
-1. **Select Vessel (`器`)**: Choose the Bento compartment geometry (4-slot Classic, 5-slot Makunouchi, 3-slot Wellness) and physical craft finish (Hinoki Cypress, Kuro Urushi Lacquer, or Shigaraki Ceramic).
-2. **Compose Dishes (`盛り付け`)**: Drag overhead studio food photography from the curated Oshinagaki menu into compartments, swap compartments, or layer toppings (*Furikake*, *Tobiko*, *Onsen Tamago*, *Mentaiko Mayo*).
-3. **Evaluate Harmony (`五色・栄養`)**: Inspect real-time Washoku 5-color balance and macronutrient telemetry.
-4. **Seal & Order (`お会計・包装`)**: Close the box with a traditional *Noshi/Obi* paper wrap, customize the calligraphy label, and review the itemized Japanese receipt.
+## 2. Core User Journey
+1. **เลือกขนาดกล่อง / แพ็กเกจเซ็ต**:
+   - **กล่องดำ 2 ช่อง (เซตเริ่มต้น อิ่มคุ้ม 50.-)**: ข้าวสวยหอมมะลิ + กับข้าว 1 อย่าง (หมู/ไก่)
+   - **กล่องดำ 3 ช่อง พร้อมถ้วยฟอยล์ (เซตจุใจ 80.- / รวมทะเล 100.- / ซีฟู้ดเลิฟเวอร์ 120.-)**: ข้าวสวย + กับข้าวหลัก 1 อย่าง + ต้ม/แกง/ซุป หรือกับข้าวที่ 2 + ผักเคียงและน้ำจิ้ม
+2. **ลากวางเมนูอาหารและท็อปปิ้งไข่ (Drag & Drop)**:
+   - เลือกจากเมนูทั้งหมดของร้าน (ราดข้าว/ผัดเผ็ด 15 เมนู, ข้าวหน้ายอดฮิต & เมนูพิเศษ 13 เมนู, ต้ม/แกง/ซุปถ้วยฟอยล์ 6 เมนู, ท็อปปิ้งไข่ 5 เมนู)
+3. **สลับดูภาพถ่ายกล่องจริงจากครัวคุณพ่อ (100% Real Kitchen Box View)**:
+   - สำหรับชุดที่มีภาพถ่ายกล่องเต็มใบอยู่แล้ว สามารถกดดูภาพถ่ายจริงจากครัวคุณพ่อแบบเต็มกล่องได้ทันที
+4. **สรุปใบเสนอราคา & คัดลอกส่งสั่งซื้อ**:
+   - ระบุจำนวนกล่อง คำนวณราคารวมทั้งบิล และกดคัดลอกข้อความใบสั่งซื้อส่งให้ทางร้านได้ทันที
